@@ -17,6 +17,13 @@
             border-radius: 10px;
             background-color: #f9f9f9;
         }
+        .shipping-info {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 14px;
+        }
         label {
             display: block;
             margin-bottom: 8px;
@@ -51,6 +58,15 @@
 <body>
     <div class="container">
         <h2>提前归还退款计算器</h2>
+        
+        <!-- 新增运费信息 -->
+        <div class="shipping-info">
+            <strong>常见设备运费：</strong><br>
+            - VR设备: 20元<br>
+            - 游戏主机: 40元<br>
+            - AR眼镜: 20元
+        </div>
+
         <label for="startDate">租期开始日期:</label>
         <input type="date" id="startDate">
 
