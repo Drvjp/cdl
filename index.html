@@ -1,125 +1,90 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>提前归还退款计算器</title>
+    <title>柴哒赁导航</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #f9f9f9;
+            background-color: #f0f0f0;
         }
-        .shipping-info {
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            font-size: 14px;
+        h1 {
+            color: #333;
+            text-align: center;
         }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
+        .nav {
+            text-align: center;
+            margin: 20px 0;
         }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #28a745;
+        .nav button {
+            padding: 10px 16px;
+            margin: 0 5px;
+            font-size: 16px;
+            background-color: #0066cc;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
         }
-        button:hover {
-            background-color: #218838;
+        .nav button:hover {
+            background-color: #0055aa;
         }
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
+        .frame-container {
+            width: 100%;
+            height: 1000px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .home-btn {
+            display: block;
+            width: 120px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #555;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .home-btn:hover {
+            background-color: #333;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>提前归还退款计算器</h2>
-        
-        <!-- 新增运费信息 -->
-        <div class="shipping-info">
-            <strong>常见设备运费：</strong><br>
-            - AR\VR设备: 20元<br>
-            - 游戏主机: 40元<br>
-            - 详细运费可从顺丰APP输入单号查询，或联系客服咨询
-        </div>
+    <h1>📝 柴哒赁常用工具汇总</h1>
 
-        <label for="startDate">租期开始日期:</label>
-        <input type="date" id="startDate">
-
-        <label for="endDate">租期结束日期:</label>
-        <input type="date" id="endDate">
-
-        <label for="returnDate">归还日期:</label>
-        <input type="date" id="returnDate">
-
-        <label for="totalRent">总租金（元）:</label>
-        <input type="number" id="totalRent" placeholder="请输入总租金">
-
-        <label for="shippingFee">发出运费（元）:</label>
-        <input type="number" id="shippingFee" placeholder="请输入发出运费">
-
-        <button onclick="calculateRefund()">计算退款</button>
-
-        <div class="result" id="result"></div>
+    <div class="nav">
+        <button onclick="loadPage('tiqianguihuan.html')">提前归还计算器</button>
+        <button onclick="loadPage('xielv.html')">斜率计算器</button>
+        <button onclick="loadPage('yunfei.html')">运费计算器</button>
+	<button onclick="loadPage('zuqi.html')">租期日历计算器</button>
+        <button onclick="clearFrame()">清空</button>
     </div>
 
+    <div class="frame-container">
+        <iframe id="contentFrame" src="" frameborder="0"></iframe>
+    </div>
+
+    <!-- 返回主页按钮（在 iframe 里也会显示） -->
+    <a href="index.html" class="home-btn">← 返回主页</a>
+
     <script>
-        function calculateRefund() {
-            // 获取输入值
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
-            const returnDate = new Date(document.getElementById('returnDate').value);
-            const totalRent = parseFloat(document.getElementById('totalRent').value);
-            const shippingFee = parseFloat(document.getElementById('shippingFee').value);
-
-            // 计算总租期（天）
-            const totalPeriod = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-
-            // 计算剩余天数（天）
-            const remainingDays = Math.ceil((endDate - returnDate) / (1000 * 60 * 60 * 24));
-
-            // 检查归还日期是否在租期内
-            if (returnDate < startDate || returnDate > endDate) {
-                document.getElementById('result').innerHTML = "归还日期不在租期内，请重新选择！";
-                return;
-            }
-
-            // 计算日均租金
-            const dailyRent = (totalRent - shippingFee) / totalPeriod;
-
-            // 计算退款金额
-            const refundAmount = (remainingDays / 2) * dailyRent;
-
-            // 显示结果
-            document.getElementById('result').innerHTML = `
-                总租期: ${totalPeriod} 天<br>
-                剩余天数: ${remainingDays} 天<br>
-                提前归还退款金额: ${refundAmount.toFixed(2)} 元
-            `;
+        function loadPage(url) {
+            document.getElementById('contentFrame').src = url;
+        }
+        function clearFrame() {
+            document.getElementById('contentFrame').src = '';
         }
     </script>
 </body>
