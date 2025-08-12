@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>租金区间斜率计算</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+        background: #f4f4f4;
+    }
+    .table-container {
+        overflow-x: auto;
+        margin-bottom: 20px;
+        background: white;
+        border-radius: 8px;
+        padding: 10px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 600px;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 6px;
+        text-align: center;
+        font-size: 14px;
+    }
+    th {
+        background: #f0f0f0;
+    }
+    .hidden {
+        display: none;
+    }
+    button {
+        margin: 4px 2px;
+        padding: 6px 10px;
+        border: none;
+        background: #4CAF50;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    button:hover {
+        background: #45a049;
+    }
+    input {
+        width: 80px;
+        padding: 4px;
+        font-size: 14px;
+        text-align: center;
+    }
+    @media (max-width: 768px) {
+        th, td {
+            font-size: 12px;
+            padding: 4px;
+        }
+        input {
+            width: 60px;
+            font-size: 12px;
+        }
+        button {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+    }
+    .delete-btn {
+        background: #e74c3c;
+    }
+    .delete-btn:hover {
+        background: #c0392b;
+    }
+</style>
+</head>
+<body>
+
+<h2>租金区间斜率计算</h2>
+
+<div class="table-container">
+    <table id="inputTable">
+        <thead>
+            <tr>
+                <th>天数</th>
+                <th>租金</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td data-days="1">1天</td>
+                <td><input type="number" id="rent1"></td>
+                <td><button class="delete-btn" onclick="deleteRent(1)">删除</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <button onclick="addRentColumn()">添加租期</button>
+    <button onclick="calculate()">计算</button>
+    <button onclick="toggleFormula()">显示/隐藏公式</button>
+</div>
+
+<p id="errorMessage" style="color:red;"></p>
+
+<div class="table-container">
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>天数</th>
+                <th>总租金</th>
+                <th>日租金</th>
+                <th class="hidden">公式</th>
+                <th class="hidden">斜率</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+function truncateToTwoDecimals(num) {
+    return Math.floor(num * 100) / 100;
+}
+
+function addRentColumn() {
+    const days = prompt("请输入租期天数（正整数）");
+    if (!days || isNaN(days) || days <= 0) return;
+
+    const tableBody = document.querySelector("#inputTable tbody");
+
+    const rents = [];
+    document.querySelectorAll('#inputTable td[data-days]').forEach(td => {
+        const d = parseInt(td.getAttribute('data-days'));
+        const value = document.getElementById(`rent${d}`).value;
+        rents.push({ days: d, value });
+    });
+
+    if (rents.some(r => r.days === parseInt(days))) {
+        alert("该租期已存在！");
+        return;
+    }
+
+    rents.push({ days: parseInt(days), value: "" });
+
+    rents.sort((a, b) => a.days - b.days);
+
+    tableBody.innerHTML = "";
+    rents.forEach(r => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td data-days="${r.days}">${r.days}天</td>
+            <td><input type="number" id="rent${r.days}" value="${r.value}"></td>
+            <td><button class="delete-btn" onclick="deleteRent(${r.days})">删除</button></td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function deleteRent(days) {
+    const tableBody = document.querySelector("#inputTable tbody");
+    const rows = Array.from(tableBody.querySelectorAll("tr"));
+    const filtered = rows.filter(row => parseInt(row.querySelector("td").getAttribute("data-days")) !== days);
+
+    tableBody.innerHTML = "";
+    filtered.forEach(row => tableBody.appendChild(row));
+}
+
+function calculate() {
+    const rentValues = [];
+    document.querySelectorAll('#inputTable td[data-days]').forEach(td => {
+        const days = parseInt(td.getAttribute('data-days'));
+        const value = parseFloat(document.getElementById(`rent${days}`).value);
+        if (!isNaN(value)) {
+            rentValues.push({ days, value });
+        }
+    });
+
+    rentValues.sort((a, b) => a.days - b.days);
+
+    document.getElementById("errorMessage").textContent = "";
+    if (rentValues.length < 2) {
+        document.getElementById("errorMessage").textContent = "至少需要两个租金值才能计算！";
+        return;
+    }
+
+    const resultTableBody = document.querySelector("#resultTable tbody");
+    resultTableBody.innerHTML = "";
+
+    const first = rentValues[0];
+    resultTableBody.appendChild(makeRow(first.days, first.value, first.value / first.days, "有固定值", "无需计算"));
+
+    for (let i = 0; i < rentValues.length - 1; i++) {
+        const start = rentValues[i];
+        const end = rentValues[i + 1];
+        const slope = (end.value - start.value) / (end.days - start.days);
+
+        for (let day = start.days + 1; day < end.days; day++) {
+            const totalRent = start.value + (day - start.days) * slope;
+            const dailyRent = totalRent / day;
+            resultTableBody.appendChild(
+                makeRow(day, totalRent, dailyRent, 
+                `等于${start.days}天租金+(${day}天-${start.days}天)×${truncateToTwoDecimals(slope)}`, 
+                truncateToTwoDecimals(slope))
+            );
+        }
+
+        resultTableBody.appendChild(makeRow(end.days, end.value, end.value / end.days, "有固定值", "无需计算"));
+    }
+}
+
+function makeRow(days, total, daily, formula, slope) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>${days}天</td>
+        <td>${truncateToTwoDecimals(total)}</td>
+        <td>${truncateToTwoDecimals(daily)}</td>
+        <td class="hidden">${formula}</td>
+        <td class="hidden">${slope}</td>
+    `;
+    return row;
+}
+
+function toggleFormula() {
+    document.querySelectorAll("#resultTable th:nth-child(4), #resultTable th:nth-child(5), #resultTable td:nth-child(4), #resultTable td:nth-child(5)")
+        .forEach(el => el.classList.toggle("hidden"));
+}
+</script>
+
+</body>
+</html>
