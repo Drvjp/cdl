@@ -29,11 +29,6 @@
             margin-bottom: 30px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .header:hover {
-            transform: scale(1.02);
         }
 
         .header h1 {
@@ -63,11 +58,6 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            transition: transform 0.3s;
-        }
-
-        .game-card:hover {
-            transform: translateY(-3px);
         }
 
         .game-image {
@@ -126,11 +116,6 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-1px);
         }
 
         .btn-primary {
@@ -240,13 +225,6 @@
             border-radius: 12px;
             padding: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .room-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
         }
 
         .room-header {
@@ -347,17 +325,44 @@
             background: #ef4444;
         }
 
-        .session-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 10px;
+        .machine-games {
+            margin-top: 8px;
+            padding: 8px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            min-height: 40px;
         }
 
-        .session-buttons {
+        .game-item {
+            display: inline-block;
+            background: #e2e8f0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin: 2px 4px 2px 0;
+            color: #475569;
+        }
+
+        .add-game-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        .session-controls {
             display: flex;
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         .session-btn {
@@ -461,6 +466,122 @@
             justify-content: center;
         }
 
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .game-item {
+            text-align: center;
+            position: relative;
+        }
+
+        .game-image {
+            width: 100%;
+            height: 100px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 11px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .game-name {
+            font-size: 12px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .game-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2px;
+            margin-top: 2px;
+        }
+
+        .game-tag {
+            background: #667eea;
+            color: white;
+            padding: 1px 5px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+        }
+
+        .add-game-form {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .form-group textarea {
+            min-height: 50px;
+            resize: vertical;
+        }
+
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+            min-height: 35px;
+            padding: 4px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .tag {
+            background: #667eea;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tag-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 13px;
+        }
+
         .password-modal {
             display: none;
             position: fixed;
@@ -512,6 +633,17 @@
             color: white;
         }
 
+        .back-button {
+            margin-bottom: 15px;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 flex-direction: column;
@@ -526,7 +658,7 @@
                 justify-content: center;
             }
             
-            .session-buttons {
+            .session-controls {
                 flex-direction: column;
             }
             
@@ -555,6 +687,7 @@
                 <div class="action-buttons">
                     <button id="addRoom" class="btn-info">+ 添加包厢</button>
                     <button id="addMachine" class="btn-success">+ 添加机器</button>
+                    <button id="editGames" class="btn-primary">编辑游戏目录</button>
                 </div>
                 <div class="action-buttons">
                     <button id="refreshData" class="btn-warning">刷新</button>
@@ -570,6 +703,59 @@
 
                 <div class="game-rooms" id="gameRooms"></div>
             </div>
+        </div>
+
+        <!-- 游戏目录编辑界面 -->
+        <div class="admin-panel" id="gamesPanel" style="display: none;">
+            <button id="backToAdmin" class="back-button">← 返回管理员界面</button>
+            
+            <h2 style="color: white; text-align: center; margin-bottom: 20px;">编辑游戏目录</h2>
+            
+            <div class="action-bar" style="margin-bottom: 20px;">
+                <div class="action-buttons">
+                    <button id="addNewGame" class="btn-success">+ 添加新游戏</button>
+                </div>
+            </div>
+            
+            <div class="games-waterfall" id="gamesList"></div>
+        </div>
+    </div>
+
+    <!-- 添加新游戏模态框 -->
+    <div class="modal" id="addGameModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加新游戏</h3>
+                <button class="modal-close" id="closeAddGameModal">×</button>
+            </div>
+            <div class="add-game-form">
+                <div class="form-group">
+                    <label for="gameName">游戏名称</label>
+                    <input type="text" id="gameName" placeholder="输入游戏名称">
+                </div>
+                <div class="form-group">
+                    <label for="gameImage">图片URL</label>
+                    <input type="text" id="gameImage" placeholder="输入图片URL">
+                </div>
+                <div class="form-group">
+                    <label>游戏标签</label>
+                    <div class="tags-input" id="tagsInput">
+                        <input type="text" id="tagInput" placeholder="输入标签后按回车">
+                    </div>
+                </div>
+                <button id="saveGameBtn" class="btn-success">保存游戏</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 选择游戏模态框 -->
+    <div class="modal" id="selectGameModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="selectGameTitle">选择游戏</h3>
+                <button class="modal-close" id="closeSelectGameModal">×</button>
+            </div>
+            <div class="games-grid" id="availableGames"></div>
         </div>
     </div>
 
@@ -590,7 +776,7 @@
     <div class="password-modal" id="extendPasswordModal">
         <div class="password-content">
             <h2>加时续玩</h2>
-            <p id="extendMinutesText">续玩 <span id="extendMinutes">0</span> 分钟</span>
+            <p id="extendMinutesText">续玩 <span id="extendMinutes">0</span> 分钟</p>
             <input type="password" id="extendPasswordInput" class="password-input" placeholder="输入密码">
             <div>
                 <button class="password-btn cancel" id="cancelExtend">取消</button>
@@ -608,19 +794,36 @@
         let currentRoomId = null;
         let currentMachineId = null;
         let extendMinutes = 0;
+        let currentSelectingMachine = null;
 
         // DOM元素缓存
         const elements = {
             header: document.getElementById('header'),
             customerInterface: document.getElementById('customerInterface'),
             adminPanel: document.getElementById('adminPanel'),
+            gamesPanel: document.getElementById('gamesPanel'),
             gamesWaterfall: document.getElementById('gamesWaterfall'),
             availableMachines: document.getElementById('availableMachines'),
             gameRooms: document.getElementById('gameRooms'),
             addRoom: document.getElementById('addRoom'),
             addMachine: document.getElementById('addMachine'),
+            editGames: document.getElementById('editGames'),
             refreshData: document.getElementById('refreshData'),
             exitAdmin: document.getElementById('exitAdmin'),
+            backToAdmin: document.getElementById('backToAdmin'),
+            addNewGame: document.getElementById('addNewGame'),
+            gamesList: document.getElementById('gamesList'),
+            addGameModal: document.getElementById('addGameModal'),
+            closeAddGameModal: document.getElementById('closeAddGameModal'),
+            gameName: document.getElementById('gameName'),
+            gameImage: document.getElementById('gameImage'),
+            tagsInput: document.getElementById('tagsInput'),
+            tagInput: document.getElementById('tagInput'),
+            saveGameBtn: document.getElementById('saveGameBtn'),
+            selectGameModal: document.getElementById('selectGameModal'),
+            closeSelectGameModal: document.getElementById('closeSelectGameModal'),
+            selectGameTitle: document.getElementById('selectGameTitle'),
+            availableGames: document.getElementById('availableGames'),
             passwordModal: document.getElementById('passwordModal'),
             passwordInput: document.getElementById('passwordInput'),
             confirmPassword: document.getElementById('confirmPassword'),
@@ -655,7 +858,10 @@
                     if (savedData) {
                         try {
                             const localData = JSON.parse(savedData);
-                            gameData = localData;
+                            // 合并数据
+                            if (localData.rooms) gameData.rooms = localData.rooms;
+                            if (localData.machines) gameData.machines = localData.machines;
+                            if (localData.machineGames) gameData.machineGames = localData.machineGames;
                         } catch (e) {
                             console.error('Failed to parse saved data', e);
                         }
@@ -685,18 +891,21 @@
                     { id: 'machine5', name: 'PC-01' },
                     { id: 'machine6', name: 'Arcade-01' }
                 ],
-                games: {
-                    'machine1': [
-                        { id: 'game1', name: '战神4', image: 'https://placehold.co/120x120/orange/white?text=战神4', tags: ['动作', '冒险'] }
-                    ]
-                }
+                games: [
+                    { id: 'game1', name: '战神4', image: 'https://placehold.co/120x120/orange/white?text=战神4', tags: ['动作', '冒险'] }
+                ],
+                machineGames: {}
             };
         }
 
         // 保存到localStorage
         function saveToLocalStorage() {
             if (gameData) {
-                localStorage.setItem('gameRoomData', JSON.stringify(gameData));
+                localStorage.setItem('gameRoomData', JSON.stringify({
+                    rooms: gameData.rooms,
+                    machines: gameData.machines,
+                    machineGames: gameData.machineGames
+                }));
             }
         }
 
@@ -715,12 +924,36 @@
             // 管理员界面事件
             if (elements.addRoom) elements.addRoom.addEventListener('click', addRoom);
             if (elements.addMachine) elements.addMachine.addEventListener('click', addMachine);
+            if (elements.editGames) elements.editGames.addEventListener('click', showGamesPanel);
             if (elements.refreshData) elements.refreshData.addEventListener('click', () => {
                 loadData();
                 showMessage('数据已刷新');
             });
             
             if (elements.exitAdmin) elements.exitAdmin.addEventListener('click', exitAdminMode);
+            if (elements.backToAdmin) elements.backToAdmin.addEventListener('click', backToAdmin);
+            if (elements.addNewGame) elements.addNewGame.addEventListener('click', showAddGameModal);
+            
+            // 添加游戏模态框事件
+            if (elements.closeAddGameModal) elements.closeAddGameModal.addEventListener('click', () => {
+                elements.addGameModal.style.display = 'none';
+            });
+            
+            if (elements.saveGameBtn) elements.saveGameBtn.addEventListener('click', saveNewGame);
+            
+            if (elements.tagInput) {
+                elements.tagInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && this.value.trim() !== '') {
+                        addTag(this.value.trim());
+                        this.value = '';
+                    }
+                });
+            }
+            
+            // 选择游戏模态框事件
+            if (elements.closeSelectGameModal) elements.closeSelectGameModal.addEventListener('click', () => {
+                elements.selectGameModal.style.display = 'none';
+            });
             
             // 密码模态框事件
             if (elements.confirmPassword) elements.confirmPassword.addEventListener('click', checkPassword);
@@ -759,17 +992,11 @@
                 showPasswordModal();
                 clickCount = 0;
             }
-            
-            // 调试信息
-            console.log(`点击次数: ${clickCount}, 时间差: ${now - lastClickTime}ms`);
         }
 
         // 显示密码输入模态框
         function showPasswordModal() {
-            if (!elements.passwordModal) {
-                console.error('密码模态框元素不存在');
-                return;
-            }
+            if (!elements.passwordModal) return;
             
             elements.passwordInput.value = '';
             elements.passwordModal.style.display = 'flex';
@@ -782,10 +1009,7 @@
 
         // 检查密码
         function checkPassword() {
-            if (!elements.passwordInput) {
-                console.error('密码输入框元素不存在');
-                return;
-            }
+            if (!elements.passwordInput) return;
             
             const password = elements.passwordInput.value;
             if (password === ADMIN_PASSWORD) {
@@ -800,13 +1024,11 @@
 
         // 进入管理员模式
         function enterAdminMode() {
-            if (!elements.customerInterface || !elements.adminPanel) {
-                console.error('界面元素不存在');
-                return;
-            }
+            if (!elements.customerInterface || !elements.adminPanel) return;
             
             elements.customerInterface.style.display = 'none';
             elements.adminPanel.style.display = 'block';
+            elements.gamesPanel.style.display = 'none';
             renderAvailableMachines();
             renderGameRooms();
             showMessage('欢迎进入管理员后台');
@@ -816,33 +1038,35 @@
         function exitAdminMode() {
             if (confirm('确定要退出管理员后台吗？')) {
                 elements.adminPanel.style.display = 'none';
+                elements.gamesPanel.style.display = 'none';
                 elements.customerInterface.style.display = 'block';
                 renderCustomerInterface();
                 showMessage('已退出管理员后台');
             }
         }
 
+        // 返回管理员界面
+        function backToAdmin() {
+            elements.gamesPanel.style.display = 'none';
+            elements.adminPanel.style.display = 'block';
+            renderGamesList();
+        }
+
+        // 显示游戏目录编辑界面
+        function showGamesPanel() {
+            elements.adminPanel.style.display = 'none';
+            elements.gamesPanel.style.display = 'block';
+            renderGamesList();
+        }
+
         // 渲染客户界面（游戏瀑布图）
         function renderCustomerInterface() {
-            if (!elements.gamesWaterfall || !gameData) {
-                console.error('游戏瀑布图元素不存在或数据未加载');
-                return;
-            }
+            if (!elements.gamesWaterfall || !gameData) return;
             
             const container = elements.gamesWaterfall;
             container.innerHTML = '';
 
-            // 收集所有游戏
-            const allGames = [];
-            Object.values(gameData.games).forEach(machineGames => {
-                machineGames.forEach(game => {
-                    if (!allGames.some(g => g.id === game.id)) {
-                        allGames.push(game);
-                    }
-                });
-            });
-
-            // 随机排序
+            const allGames = [...gameData.games];
             allGames.sort(() => Math.random() - 0.5);
 
             allGames.forEach(game => {
@@ -863,12 +1087,190 @@
             });
         }
 
-        // 渲染可用机器
-        function renderAvailableMachines() {
-            if (!elements.availableMachines || !gameData) {
-                console.error('可用机器容器不存在或数据未加载');
+        // 渲染游戏列表
+        function renderGamesList() {
+            if (!elements.gamesList || !gameData) return;
+            
+            const container = elements.gamesList;
+            container.innerHTML = '';
+
+            const allGames = [...gameData.games];
+            allGames.sort((a, b) => a.name.localeCompare(b.name));
+
+            allGames.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                
+                gameCard.innerHTML = `
+                    <div class="game-image" style="background-image: url(${game.image})"></div>
+                    <div class="game-info">
+                        <div class="game-name">${game.name}</div>
+                        <div class="game-tags">
+                            ${game.tags.map(tag => `<span class="game-tag">${tag}</span>`).join('')}
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <button onclick="editGame('${game.id}')" class="btn-info" style="padding: 4px 8px; font-size: 12px;">编辑</button>
+                            <button onclick="deleteGame('${game.id}')" class="btn-danger" style="padding: 4px 8px; font-size: 12px;">删除</button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(gameCard);
+            });
+        }
+
+        // 显示添加游戏模态框
+        function showAddGameModal() {
+            // 清空表单
+            if (elements.gameName) elements.gameName.value = '';
+            if (elements.gameImage) elements.gameImage.value = '';
+            if (elements.tagInput) elements.tagInput.value = '';
+            
+            // 清空标签
+            const tagElements = elements.tagsInput.querySelectorAll('.tag');
+            tagElements.forEach(el => el.remove());
+            
+            elements.addGameModal.style.display = 'flex';
+            setTimeout(() => {
+                if (elements.gameName) elements.gameName.focus();
+            }, 100);
+        }
+
+        // 添加标签
+        function addTag(tag) {
+            if (!elements.tagsInput || !tag) return;
+            
+            if (getTags().includes(tag)) return;
+            
+            const tagSpan = document.createElement('span');
+            tagSpan.className = 'tag';
+            tagSpan.innerHTML = `${tag} <span class="tag-remove">×</span>`;
+            tagSpan.querySelector('.tag-remove').onclick = () => {
+                tagSpan.remove();
+            };
+            elements.tagsInput.insertBefore(tagSpan, elements.tagInput);
+        }
+
+        // 获取所有标签
+        function getTags() {
+            if (!elements.tagsInput) return [];
+            
+            const tags = [];
+            const tagElements = elements.tagsInput.querySelectorAll('.tag');
+            tagElements.forEach(el => {
+                tags.push(el.firstChild.textContent);
+            });
+            return tags;
+        }
+
+        // 保存新游戏
+        function saveNewGame() {
+            if (!elements.gameName || !elements.gameImage) return;
+            
+            const name = elements.gameName.value.trim();
+            const image = elements.gameImage.value.trim();
+            const tags = getTags();
+            
+            if (!name) {
+                showMessage('请输入游戏名称');
                 return;
             }
+            
+            if (!image) {
+                showMessage('请输入图片URL');
+                return;
+            }
+            
+            if (tags.length === 0) {
+                tags.push('未分类');
+            }
+            
+            const newGame = {
+                id: `game${Date.now()}`,
+                name: name,
+                image: image,
+                tags: tags
+            };
+            
+            gameData.games.push(newGame);
+            saveToLocalStorage();
+            renderGamesList();
+            elements.addGameModal.style.display = 'none';
+            showMessage('新游戏已添加');
+        }
+
+        // 编辑游戏
+        function editGame(gameId) {
+            const game = gameData.games.find(g => g.id === gameId);
+            if (!game) return;
+            
+            // 填充表单
+            if (elements.gameName) elements.gameName.value = game.name;
+            if (elements.gameImage) elements.gameImage.value = game.image;
+            
+            // 清空标签
+            const tagElements = elements.tagsInput.querySelectorAll('.tag');
+            tagElements.forEach(el => el.remove());
+            
+            // 添加现有标签
+            game.tags.forEach(tag => {
+                addTag(tag);
+            });
+            
+            elements.addGameModal.style.display = 'flex';
+            setTimeout(() => {
+                if (elements.gameName) elements.gameName.focus();
+            }, 100);
+            
+            // 临时保存游戏ID
+            window.currentEditGameId = gameId;
+            
+            // 重写保存按钮的点击事件
+            const saveBtn = elements.saveGameBtn;
+            const originalOnClick = saveBtn.onclick;
+            saveBtn.onclick = function() {
+                // 更新游戏信息
+                game.name = elements.gameName.value.trim();
+                game.image = elements.gameImage.value.trim();
+                game.tags = getTags();
+                
+                saveToLocalStorage();
+                renderGamesList();
+                elements.addGameModal.style.display = 'none';
+                showMessage('游戏信息已更新');
+                
+                // 恢复原始事件
+                saveBtn.onclick = originalOnClick;
+                delete window.currentEditGameId;
+            };
+        }
+
+        // 删除游戏
+        function deleteGame(gameId) {
+            const game = gameData.games.find(g => g.id === gameId);
+            if (!game) return;
+            
+            if (confirm(`确定要删除游戏 "${game.name}" 吗？`)) {
+                // 检查是否被任何机器使用
+                const used = Object.values(gameData.machineGames).some(machineGames => 
+                    machineGames.includes(gameId)
+                );
+                
+                if (used) {
+                    showMessage('该游戏已被机器使用，无法删除！');
+                    return;
+                }
+                
+                gameData.games = gameData.games.filter(g => g.id !== gameId);
+                saveToLocalStorage();
+                renderGamesList();
+                showMessage('游戏已删除');
+            }
+        }
+
+        // 渲染可用机器
+        function renderAvailableMachines() {
+            if (!elements.availableMachines || !gameData) return;
             
             const container = elements.availableMachines;
             container.innerHTML = '';
@@ -950,6 +1352,10 @@
             
             if (room && machine && !room.machines.find(m => m.id === machineId)) {
                 room.machines.push({...machine});
+                // 初始化机器游戏列表
+                if (!gameData.machineGames[machineId]) {
+                    gameData.machineGames[machineId] = [];
+                }
                 saveToLocalStorage();
                 renderAvailableMachines();
                 renderGameRooms();
@@ -958,10 +1364,7 @@
 
         // 渲染包厢
         function renderGameRooms() {
-            if (!elements.gameRooms || !gameData) {
-                console.error('游戏房间容器不存在或数据未加载');
-                return;
-            }
+            if (!elements.gameRooms || !gameData) return;
             
             const container = elements.gameRooms;
             container.innerHTML = '';
@@ -985,10 +1388,22 @@
                 machinesHtml = '<div class="room-machines">';
                 room.machines.forEach(machine => {
                     const session = room.activeSessions[machine.id];
+                    const machineGames = gameData.machineGames[machine.id] || [];
                     
                     machinesHtml += `
-                        <div class="machine-in-room" data-machine-id="${machine.id}" data-room-id="${room.id}">
+                        <div class="machine-in-room">
                             <span class="machine-name">${machine.name}</span>
+                            <div class="machine-controls">
+                                <button class="machine-edit-btn" onclick="editMachineInRoom('${room.id}', '${machine.id}'); event.stopPropagation();">✏️</button>
+                                <button class="machine-remove-btn" onclick="removeMachine('${room.id}', '${machine.id}'); event.stopPropagation();">×</button>
+                            </div>
+                        </div>
+                        <div class="machine-games">
+                            ${machineGames.map(gameId => {
+                                const game = gameData.games.find(g => g.id === gameId);
+                                return game ? `<span class="game-item">${game.name}</span>` : '';
+                            }).join('')}
+                            <span class="add-game-btn" onclick="showSelectGame('${machine.id}', '${room.id}'); event.stopPropagation();">+</span>
                         </div>
                     `;
                 });
@@ -1022,10 +1437,8 @@
                 </div>
                 ${machinesHtml}
                 <div class="session-controls">
-                    <div class="session-buttons">
-                        <button class="session-btn btn-primary" onclick="startNewSession('${room.id}'); event.stopPropagation();">首次开始</button>
-                        <button class="session-btn btn-warning" onclick="showExtendModal('${room.id}'); event.stopPropagation();">加时续玩</button>
-                    </div>
+                    <button class="session-btn btn-primary" onclick="startNewSession('${room.id}'); event.stopPropagation();">首次开始</button>
+                    <button class="session-btn btn-warning" onclick="showExtendModal('${room.id}'); event.stopPropagation();">加时续玩</button>
                     <button class="session-btn btn-danger" onclick="endSession('${room.id}'); event.stopPropagation();">结束游戏</button>
                 </div>
                 ${sessionInfo}
@@ -1046,6 +1459,95 @@
             return div;
         }
 
+        // 显示选择游戏模态框
+        function showSelectGame(machineId, roomId) {
+            currentSelectingMachine = { machineId, roomId };
+            
+            const machine = gameData.machines.find(m => m.id === machineId);
+            elements.selectGameTitle.textContent = `为 ${machine.name} 选择游戏`;
+            
+            renderAvailableGames();
+            elements.selectGameModal.style.display = 'flex';
+        }
+
+        // 渲染可选游戏列表
+        function renderAvailableGames() {
+            if (!elements.availableGames || !currentSelectingMachine) return;
+            
+            const container = elements.availableGames;
+            container.innerHTML = '';
+            
+            const machineId = currentSelectingMachine.machineId;
+            const selectedGames = gameData.machineGames[machineId] || [];
+            const availableGames = gameData.games.filter(game => !selectedGames.includes(game.id));
+            
+            availableGames.forEach(game => {
+                const gameItem = document.createElement('div');
+                gameItem.className = 'game-item';
+                
+                const image = document.createElement('div');
+                image.className = 'game-image';
+                if (game.image && game.image.trim() !== '') {
+                    image.style.backgroundImage = `url(${game.image.trim()})`;
+                    image.style.backgroundSize = 'cover';
+                    image.style.backgroundPosition = 'center';
+                } else {
+                    image.textContent = '无图片';
+                }
+                
+                const name = document.createElement('div');
+                name.className = 'game-name';
+                name.textContent = game.name;
+                
+                const tags = document.createElement('div');
+                tags.className = 'game-tags';
+                if (game.tags && game.tags.length > 0) {
+                    game.tags.forEach(tag => {
+                        const tagSpan = document.createElement('span');
+                        tagSpan.className = 'game-tag';
+                        tagSpan.textContent = tag;
+                        tags.appendChild(tagSpan);
+                    });
+                }
+                
+                const selectBtn = document.createElement('button');
+                selectBtn.className = 'btn-success';
+                selectBtn.style.marginTop = '8px';
+                selectBtn.textContent = '选择';
+                selectBtn.onclick = () => {
+                    addGameToMachine(game.id);
+                };
+                
+                gameItem.appendChild(image);
+                gameItem.appendChild(name);
+                gameItem.appendChild(tags);
+                gameItem.appendChild(selectBtn);
+                container.appendChild(gameItem);
+            });
+            
+            if (availableGames.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">所有游戏都已添加</p>';
+            }
+        }
+
+        // 添加游戏到机器
+        function addGameToMachine(gameId) {
+            if (!currentSelectingMachine) return;
+            
+            const { machineId, roomId } = currentSelectingMachine;
+            
+            if (!gameData.machineGames[machineId]) {
+                gameData.machineGames[machineId] = [];
+            }
+            
+            gameData.machineGames[machineId].push(gameId);
+            saveToLocalStorage();
+            renderGameRooms();
+            elements.selectGameModal.style.display = 'none';
+            showMessage('游戏已添加到机器');
+            currentSelectingMachine = null;
+        }
+
         // 首次开始游戏
         function startNewSession(roomId) {
             const room = gameData.rooms.find(r => r.id === roomId);
@@ -1060,102 +1562,66 @@
                 machineOptions += `<option value="${machine.id}">${machine.name}</option>`;
             });
             
-            const machineSelect = `
-                <select id="startMachineSelect" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px; margin: 5px 0;">
-                    ${machineOptions}
-                </select>
-            `;
-            
-            // 创建时长选择
-            const durationSelect = `
-                <select id="startDurationSelect" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px; margin: 5px 0;">
-                    <option value="1">1小时</option>
-                    <option value="3">3小时</option>
-                    <option value="6">6小时</option>
-                    <option value="0">计时模式</option>
-                </select>
-            `;
-            
             // 创建对话框
-            const dialog = document.createElement('div');
-            dialog.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                z-index: 3000;
-                min-width: 300px;
-            `;
-            
-            dialog.innerHTML = `
-                <h3 style="margin-bottom: 15px; color: #333;">首次开始游戏</h3>
+            const dialog = createDialog('首次开始游戏', `
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; color: #333;">选择机器</label>
-                    ${machineSelect}
+                    <select id="startMachineSelect" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                        ${machineOptions}
+                    </select>
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; color: #333;">选择时长</label>
-                    ${durationSelect}
+                    <select id="startDurationSelect" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                        <option value="1">1小时</option>
+                        <option value="3">3小时</option>
+                        <option value="6">6小时</option>
+                        <option value="0">计时模式</option>
+                    </select>
                 </div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button id="startCancel" style="padding: 8px 16px; border: none; border-radius: 8px; background: #ef4444; color: white; cursor: pointer;">取消</button>
-                    <button id="startConfirm" style="padding: 8px 16px; border: none; border-radius: 8px; background: #667eea; color: white; cursor: pointer;">确定</button>
-                </div>
-            `;
-            
-            document.body.appendChild(dialog);
-            
-            const startConfirm = dialog.querySelector('#startConfirm');
-            const startCancel = dialog.querySelector('#startCancel');
-            const machineSelectEl = dialog.querySelector('#startMachineSelect');
-            const durationSelectEl = dialog.querySelector('#startDurationSelect');
-            
-            startConfirm.onclick = () => {
-                const selectedMachineId = machineSelectEl.value;
-                const duration = parseInt(durationSelectEl.value);
-                
-                if (!selectedMachineId) {
-                    showMessage('请选择要开始游戏的机器！');
-                    return;
-                }
-                
-                const machine = room.machines.find(m => m.id === selectedMachineId);
-                if (!machine) {
-                    showMessage('所选机器不在该包厢中！');
-                    return;
-                }
-                
-                const startTime = new Date();
-                const endTime = duration === 0 ? null : new Date(startTime.getTime() + duration * 60 * 60 * 1000);
-                
-                room.activeSessions[selectedMachineId] = {
-                    startTime: startTime.toISOString(),
-                    endTime: endTime ? endTime.toISOString() : null,
-                    duration: duration,
-                    timeLeft: duration === 0 ? null : duration * 60 * 60
-                };
-                
-                saveToLocalStorage();
-                renderGameRooms();
-                
-                if (duration > 0) {
-                    setTimeout(() => {
-                        showMessage(`${room.name} 的 ${machine.name} 游玩时间已到！`);
-                    }, duration * 60 * 60 * 1000);
-                }
-                
-                showMessage(`${machine.name} 开始游戏，时长: ${duration === 0 ? '计时模式' : duration + '小时'}`);
-                
-                document.body.removeChild(dialog);
-            };
-            
-            startCancel.onclick = () => {
-                document.body.removeChild(dialog);
-            };
+            `, [
+                { text: '取消', className: 'btn-danger', action: () => document.body.removeChild(dialog) },
+                { text: '确定', className: 'btn-primary', action: () => {
+                    const machineSelect = dialog.querySelector('#startMachineSelect');
+                    const durationSelect = dialog.querySelector('#startDurationSelect');
+                    
+                    const selectedMachineId = machineSelect.value;
+                    const duration = parseInt(durationSelect.value);
+                    
+                    if (!selectedMachineId) {
+                        showMessage('请选择要开始游戏的机器！');
+                        return;
+                    }
+                    
+                    const machine = room.machines.find(m => m.id === selectedMachineId);
+                    if (!machine) {
+                        showMessage('所选机器不在该包厢中！');
+                        return;
+                    }
+                    
+                    const startTime = new Date();
+                    const endTime = duration === 0 ? null : new Date(startTime.getTime() + duration * 60 * 60 * 1000);
+                    
+                    room.activeSessions[selectedMachineId] = {
+                        startTime: startTime.toISOString(),
+                        endTime: endTime ? endTime.toISOString() : null,
+                        duration: duration,
+                        timeLeft: duration === 0 ? null : duration * 60 * 60
+                    };
+                    
+                    saveToLocalStorage();
+                    renderGameRooms();
+                    
+                    if (duration > 0) {
+                        setTimeout(() => {
+                            showMessage(`${room.name} 的 ${machine.name} 游玩时间已到！`);
+                        }, duration * 60 * 60 * 1000);
+                    }
+                    
+                    showMessage(`${machine.name} 开始游戏，时长: ${duration === 0 ? '计时模式' : duration + '小时'}`);
+                    document.body.removeChild(dialog);
+                }}
+            ]);
         }
 
         // 显示加时续玩模态框
@@ -1172,99 +1638,69 @@
                 machineOptions += `<option value="${machine.id}">${machine.name}</option>`;
             });
             
-            const machineSelect = `
-                <select id="extendMachineSelect" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px; margin: 5px 0;">
-                    ${machineOptions}
-                </select>
-            `;
-            
             // 创建对话框
-            const dialog = document.createElement('div');
-            dialog.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                z-index: 3000;
-                min-width: 300px;
-            `;
-            
-            dialog.innerHTML = `
-                <h3 style="margin-bottom: 15px; color: #333;">加时续玩</h3>
+            const dialog = createDialog('加时续玩', `
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; color: #333;">选择机器</label>
-                    ${machineSelect}
+                    <select id="extendMachineSelect" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                        ${machineOptions}
+                    </select>
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; color: #333;">续玩分钟数</label>
                     <input type="number" id="extendMinutesInput" value="30" min="1" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px;">
                 </div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button id="extendCancel" style="padding: 8px 16px; border: none; border-radius: 8px; background: #ef4444; color: white; cursor: pointer;">取消</button>
-                    <button id="extendConfirm" style="padding: 8px 16px; border: none; border-radius: 8px; background: #f59e0b; color: white; cursor: pointer;">确定</button>
-                </div>
-            `;
-            
-            document.body.appendChild(dialog);
-            
-            const extendConfirm = dialog.querySelector('#extendConfirm');
-            const extendCancel = dialog.querySelector('#extendCancel');
-            const machineSelectEl = dialog.querySelector('#extendMachineSelect');
-            const minutesInput = dialog.querySelector('#extendMinutesInput');
-            
-            extendConfirm.onclick = () => {
-                const selectedMachineId = machineSelectEl.value;
-                const minutes = parseInt(minutesInput.value);
-                
-                if (!selectedMachineId) {
-                    showMessage('请选择机器！');
-                    return;
-                }
-                
-                if (isNaN(minutes) || minutes <= 0) {
-                    showMessage('请输入有效的分钟数！');
-                    return;
-                }
-                
-                const machine = room.machines.find(m => m.id === selectedMachineId);
-                if (!machine) {
-                    showMessage('所选机器不在该包厢中！');
-                    return;
-                }
-                
-                const session = room.activeSessions[selectedMachineId];
-                if (!session) {
-                    showMessage('该机器当前没有进行中的游戏会话！');
-                    return;
-                }
-                
-                if (session.duration === 0) {
-                    showMessage('计时模式无法加时，请使用首次开始功能！');
-                    return;
-                }
-                
-                extendMinutes = minutes;
-                currentRoomId = roomId;
-                currentMachineId = selectedMachineId;
-                
-                document.body.removeChild(dialog);
-                
-                // 显示密码验证模态框
-                elements.extendMinutes.textContent = extendMinutes;
-                elements.extendPasswordInput.value = '';
-                elements.extendPasswordModal.style.display = 'flex';
-                setTimeout(() => {
-                    elements.extendPasswordInput.focus();
-                }, 100);
-            };
-            
-            extendCancel.onclick = () => {
-                document.body.removeChild(dialog);
-            };
+            `, [
+                { text: '取消', className: 'btn-danger', action: () => document.body.removeChild(dialog) },
+                { text: '确定', className: 'btn-warning', action: () => {
+                    const machineSelect = dialog.querySelector('#extendMachineSelect');
+                    const minutesInput = dialog.querySelector('#extendMinutesInput');
+                    
+                    const selectedMachineId = machineSelect.value;
+                    const minutes = parseInt(minutesInput.value);
+                    
+                    if (!selectedMachineId) {
+                        showMessage('请选择机器！');
+                        return;
+                    }
+                    
+                    if (isNaN(minutes) || minutes <= 0) {
+                        showMessage('请输入有效的分钟数！');
+                        return;
+                    }
+                    
+                    const machine = room.machines.find(m => m.id === selectedMachineId);
+                    if (!machine) {
+                        showMessage('所选机器不在该包厢中！');
+                        return;
+                    }
+                    
+                    const session = room.activeSessions[selectedMachineId];
+                    if (!session) {
+                        showMessage('该机器当前没有进行中的游戏会话！');
+                        return;
+                    }
+                    
+                    if (session.duration === 0) {
+                        showMessage('计时模式无法加时，请使用首次开始功能！');
+                        return;
+                    }
+                    
+                    extendMinutes = minutes;
+                    currentRoomId = roomId;
+                    currentMachineId = selectedMachineId;
+                    
+                    document.body.removeChild(dialog);
+                    
+                    // 显示密码验证模态框
+                    elements.extendMinutes.textContent = extendMinutes;
+                    elements.extendPasswordInput.value = '';
+                    elements.extendPasswordModal.style.display = 'flex';
+                    setTimeout(() => {
+                        elements.extendPasswordInput.focus();
+                    }, 100);
+                }}
+            ]);
         }
 
         // 检查加时续玩密码
@@ -1303,75 +1739,29 @@
             }
         }
 
-        // 从包厢移除机器
-        function removeMachine(roomId, machineId) {
+        // 结束游戏会话
+        function endSession(roomId) {
             const room = gameData.rooms.find(r => r.id === roomId);
             if (room) {
-                room.machines = room.machines.filter(m => m.id !== machineId);
-                if (room.activeSessions[machineId]) {
-                    delete room.activeSessions[machineId];
+                const activeMachineId = Object.keys(room.activeSessions).find(id => room.activeSessions[id]);
+                if (activeMachineId) {
+                    const machine = room.machines.find(m => m.id === activeMachineId);
+                    delete room.activeSessions[activeMachineId];
+                    saveToLocalStorage();
+                    renderGameRooms();
+                    showMessage(`${machine ? machine.name : '游戏机'} 的游戏会话已结束`);
+                } else {
+                    showMessage('当前没有进行中的游戏会话');
                 }
-                saveToLocalStorage();
-                renderAvailableMachines();
-                renderGameRooms();
             }
         }
 
-        // 编辑包厢内机器名称
-        function editMachineInRoom(roomId, machineId) {
+        // 更新备注
+        function updateNote(roomId, note) {
             const room = gameData.rooms.find(r => r.id === roomId);
-            const machine = room.machines.find(m => m.id === machineId);
-            if (machine) {
-                const newName = prompt('请输入新的机器名称:', machine.name);
-                if (newName && newName.trim() !== '') {
-                    machine.name = newName.trim();
-                    saveToLocalStorage();
-                    renderGameRooms();
-                    showMessage('机器名称已更新');
-                }
-            }
-        }
-
-        // 编辑可用机器名称
-        function editMachineName(machineId) {
-            const machine = gameData.machines.find(m => m.id === machineId);
-            if (machine) {
-                const newName = prompt('请输入新的机器名称:', machine.name);
-                if (newName && newName.trim() !== '') {
-                    machine.name = newName.trim();
-                    saveToLocalStorage();
-                    renderAvailableMachines();
-                    renderGameRooms();
-                    showMessage('机器名称已更新');
-                }
-            }
-        }
-
-        // 删除游戏机
-        function deleteMachine(machineId) {
-            const machine = gameData.machines.find(m => m.id === machineId);
-            if (!machine) return;
-            
-            // 检查机器是否在使用中
-            const inUse = gameData.rooms.some(room => 
-                room.machines.some(m => m.id === machineId)
-            );
-            
-            if (inUse) {
-                showMessage('无法删除正在使用的机器，请先将其从包厢中移除');
-                return;
-            }
-            
-            if (confirm(`确定要删除游戏机 "${machine.name}" 吗？`)) {
-                // 从机器列表中删除
-                gameData.machines = gameData.machines.filter(m => m.id !== machineId);
-                // 从游戏列表中删除
-                delete gameData.games[machineId];
-                
+            if (room) {
+                room.note = note;
                 saveToLocalStorage();
-                renderAvailableMachines();
-                renderGameRooms();
-                showMessage('游戏机已删除');
             }
         }
 
@@ -1432,10 +1822,6 @@
                     name: name.trim()
                 };
                 gameData.machines.push(newMachine);
-                // 为新机器创建默认游戏列表
-                gameData.games[newMachine.id] = [
-                    { id: `game${Date.now()}`, name: '未安装游戏', image: 'https://placehold.co/120x120/gray/white?text=无', tags: ['未分类'] }
-                ];
                 saveToLocalStorage();
                 renderAvailableMachines();
                 renderGameRooms();
@@ -1443,30 +1829,111 @@
             }
         }
 
-        // 更新备注
-        function updateNote(roomId, note) {
+        // 编辑包厢内机器名称
+        function editMachineInRoom(roomId, machineId) {
             const room = gameData.rooms.find(r => r.id === roomId);
-            if (room) {
-                room.note = note;
-                saveToLocalStorage();
+            const machine = room.machines.find(m => m.id === machineId);
+            if (machine) {
+                const newName = prompt('请输入新的机器名称:', machine.name);
+                if (newName && newName.trim() !== '') {
+                    machine.name = newName.trim();
+                    saveToLocalStorage();
+                    renderGameRooms();
+                    showMessage('机器名称已更新');
+                }
             }
         }
 
-        // 结束游戏会话
-        function endSession(roomId) {
-            const room = gameData.rooms.find(r => r.id === roomId);
-            if (room) {
-                const activeMachineId = Object.keys(room.activeSessions).find(id => room.activeSessions[id]);
-                if (activeMachineId) {
-                    const machine = room.machines.find(m => m.id === activeMachineId);
-                    delete room.activeSessions[activeMachineId];
+        // 编辑可用机器名称
+        function editMachineName(machineId) {
+            const machine = gameData.machines.find(m => m.id === machineId);
+            if (machine) {
+                const newName = prompt('请输入新的机器名称:', machine.name);
+                if (newName && newName.trim() !== '') {
+                    machine.name = newName.trim();
                     saveToLocalStorage();
+                    renderAvailableMachines();
                     renderGameRooms();
-                    showMessage(`${machine ? machine.name : '游戏机'} 的游戏会话已结束`);
-                } else {
-                    showMessage('当前没有进行中的游戏会话');
+                    showMessage('机器名称已更新');
                 }
             }
+        }
+
+        // 删除游戏机
+        function deleteMachine(machineId) {
+            const machine = gameData.machines.find(m => m.id === machineId);
+            if (!machine) return;
+            
+            // 检查机器是否在使用中
+            const inUse = gameData.rooms.some(room => 
+                room.machines.some(m => m.id === machineId)
+            );
+            
+            if (inUse) {
+                showMessage('无法删除正在使用的机器，请先将其从包厢中移除');
+                return;
+            }
+            
+            if (confirm(`确定要删除游戏机 "${machine.name}" 吗？`)) {
+                // 从机器列表中删除
+                gameData.machines = gameData.machines.filter(m => m.id !== machineId);
+                // 从机器游戏列表中删除
+                delete gameData.machineGames[machineId];
+                
+                saveToLocalStorage();
+                renderAvailableMachines();
+                renderGameRooms();
+                showMessage('游戏机已删除');
+            }
+        }
+
+        // 从机器移除游戏
+        function removeGameFromMachine(machineId, gameId) {
+            if (!gameData.machineGames[machineId]) return;
+            
+            gameData.machineGames[machineId] = gameData.machineGames[machineId].filter(id => id !== gameId);
+            saveToLocalStorage();
+            renderGameRooms();
+            showMessage('游戏已从机器移除');
+        }
+
+        // 创建对话框
+        function createDialog(title, content, buttons) {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 3000;
+                min-width: 300px;
+            `;
+            
+            dialog.innerHTML = `
+                <h3 style="margin-bottom: 15px; color: #333;">${title}</h3>
+                <div>${content}</div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    ${buttons.map(btn => `
+                        <button style="padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; ${btn.className === 'btn-danger' ? 'background: #ef4444; color: white;' : btn.className === 'btn-warning' ? 'background: #f59e0b; color: white;' : 'background: #667eea; color: white;'}">
+                            ${btn.text}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.body.appendChild(dialog);
+            
+            // 绑定按钮事件
+            const buttonElements = dialog.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                buttonElements[index].onclick = btn.action;
+            });
+            
+            return dialog;
         }
 
         // 格式化时间
@@ -1522,6 +1989,15 @@
         window.deleteMachine = deleteMachine;
         window.addRoom = addRoom;
         window.addMachine = addMachine;
+        window.showGamesPanel = showGamesPanel;
+        window.backToAdmin = backToAdmin;
+        window.showAddGameModal = showAddGameModal;
+        window.saveNewGame = saveNewGame;
+        window.editGame = editGame;
+        window.deleteGame = deleteGame;
+        window.showSelectGame = showSelectGame;
+        window.addGameToMachine = addGameToMachine;
+        window.removeGameFromMachine = removeGameFromMachine;
     </script>
 </body>
 </html>
