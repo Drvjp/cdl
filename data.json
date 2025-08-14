@@ -18,27 +18,33 @@
   "machines": [
     {
       "id": "machine1",
-      "name": "PS5-01"
+      "name": "PS5-01",
+      "image": "https://placehold.co/120x120/blue/white?text=PS5"
     },
     {
       "id": "machine2",
-      "name": "PS5-02"
+      "name": "PS5-02",
+      "image": "https://placehold.co/120x120/orange/white?text=PS5"
     },
     {
       "id": "machine3",
-      "name": "Xbox-01"
+      "name": "Xbox-01",
+      "image": "https://placehold.co/120x120/green/white?text=Xbox"
     },
     {
       "id": "machine4",
-      "name": "Switch-01"
+      "name": "Switch-01",
+      "image": "https://placehold.co/120x120/red/white?text=Switch"
     },
     {
       "id": "machine5",
-      "name": "PC-01"
+      "name": "PC-01",
+      "image": "https://placehold.co/120x120/purple/white?text=PC"
     },
     {
       "id": "machine6",
-      "name": "Arcade-01"
+      "name": "Arcade-01",
+      "image": "https://placehold.co/120x120/yellow/white?text=Arcade"
     }
   ],
   "games": [
