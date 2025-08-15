@@ -1,351 +1,91 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>电玩店包厢管理系统</title>
+    <title>柴哒赁导航</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 0;
             padding: 20px;
+            background-color: #f0f0f0;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
+        h1 {
+            color: #333;
             text-align: center;
+        }
+        .nav {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .nav button {
+            padding: 10px 16px;
+            margin: 0 5px;
+            font-size: 16px;
+            background-color: #0066cc;
             color: white;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .nav button:hover {
+            background-color: #0055aa;
         }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        /* 首页样式 */
-        .games-waterfall {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .game-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        .game-image {
+        .frame-container {
             width: 100%;
-            height: 130px;
-            background: #f8fafc;
-            background-size: cover;
-            background-position: center;
-            border-bottom: 2px solid #667eea;
+            height: 1000px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
-        .game-info {
-            padding: 12px;
-        }
-
-        .game-name {
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .game-tag {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            margin-right: 3px;
-            margin-bottom: 3px;
-        }
-
-        /* 模态框样式 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        iframe {
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-header h3 {
-            color: #333;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-
-        .password-input {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-        }
-
-        .password-btn {
-            padding: 8px 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            margin: 0 8px;
         }
-
-        .password-btn.cancel {
-            background: #ef4444;
+        .home-btn {
+            display: block;
+            width: 120px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #555;
             color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
         }
-
-        .password-btn.confirm {
-            background: #667eea;
-            color: white;
+        .home-btn:hover {
+            background-color: #333;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header" id="header">
-            <h1>🎮 电玩店包厢管理系统</h1>
-            <p>欢迎体验我们的游戏世界</p>
-        </div>
+    <h1>📝 柴哒赁常用工具汇总</h1>
 
-        <div class="games-waterfall" id="gamesWaterfall"></div>
+    <div class="nav">
+        <button onclick="loadPage('tiqianguihuan.html')">提前归还计算器</button>
+        <button onclick="loadPage('xielv.html')">斜率计算器</button>
+        <button onclick="loadPage('yunfei.html')">运费计算器</button>
+	<button onclick="loadPage('zuqi.html')">租期日历计算器</button>
+        <button onclick="clearFrame()">清空</button>
     </div>
 
-    <!-- 密码输入模态框 -->
-    <div class="modal" id="passwordModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>管理员登录</h3>
-            </div>
-            <p>请输入管理员密码</p>
-            <input type="password" id="passwordInput" class="password-input" placeholder="输入密码">
-            <div>
-                <button class="password-btn cancel" id="cancelPassword">取消</button>
-                <button class="password-btn confirm" id="confirmPassword">确认</button>
-            </div>
-        </div>
+    <div class="frame-container">
+        <iframe id="contentFrame" src="" frameborder="0"></iframe>
     </div>
+
+    <!-- 返回主页按钮（在 iframe 里也会显示） -->
+    <a href="index.html" class="home-btn">← 返回主页</a>
 
     <script>
-        // 全局变量
-        let gameData = null;
-        let clickCount = 0;
-        let lastClickTime = 0;
-        const ADMIN_PASSWORD = '123456';
-
-        // DOM元素缓存
-        const elements = {
-            header: document.getElementById('header'),
-            gamesWaterfall: document.getElementById('gamesWaterfall'),
-            passwordModal: document.getElementById('passwordModal'),
-            passwordInput: document.getElementById('passwordInput'),
-            confirmPassword: document.getElementById('confirmPassword'),
-            cancelPassword: document.getElementById('cancelPassword')
-        };
-
-        // 初始化应用
-        function init() {
-            loadData();
-            setupEventListeners();
+        function loadPage(url) {
+            document.getElementById('contentFrame').src = url;
         }
-
-        // 加载数据
-        function loadData() {
-            fetch('data.json')
-                .then(response => response.json())
-                .then(data => {
-                    gameData = data;
-                    // 从localStorage加载数据（如果有）
-                    const savedData = localStorage.getItem('gameRoomData');
-                    if (savedData) {
-                        try {
-                            const localData = JSON.parse(savedData);
-                            if (localData.rooms) gameData.rooms = localData.rooms;
-                            if (localData.machines) gameData.machines = localData.machines;
-                            if (localData.machineGames) gameData.machineGames = localData.machineGames;
-                        } catch (e) {
-                            console.error('Failed to parse saved data', e);
-                        }
-                    }
-                    renderGamesWaterfall();
-                })
-                .catch(error => {
-                    console.error('加载数据失败:', error);
-                    gameData = getDefaultData();
-                    renderGamesWaterfall();
-                });
+        function clearFrame() {
+            document.getElementById('contentFrame').src = '';
         }
-
-        // 获取默认数据
-        function getDefaultData() {
-            return {
-                rooms: [
-                    { id: 'room1', name: '包厢A', machines: [], note: '', activeSessions: {} },
-                    { id: 'room2', name: '包厢B', machines: [], note: '', activeSessions: {} }
-                ],
-                machines: [
-                    { id: 'machine1', name: 'PS5-01', image: 'https://placehold.co/120x120/blue/white?text=PS5' },
-                    { id: 'machine2', name: 'PS5-02', image: 'https://placehold.co/120x120/orange/white?text=PS5' },
-                    { id: 'machine3', name: 'Xbox-01', image: 'https://placehold.co/120x120/green/white?text=Xbox' },
-                    { id: 'machine4', name: 'Switch-01', image: 'https://placehold.co/120x120/red/white?text=Switch' },
-                    { id: 'machine5', name: 'PC-01', image: 'https://placehold.co/120x120/purple/white?text=PC' },
-                    { id: 'machine6', name: 'Arcade-01', image: 'https://placehold.co/120x120/yellow/white?text=Arcade' }
-                ],
-                games: [
-                    { id: 'game1', name: '战神4', image: 'https://placehold.co/120x120/orange/white?text=战神4', tags: ['动作', '冒险'] }
-                ],
-                machineGames: {}
-            };
-        }
-
-        // 保存到localStorage
-        function saveToLocalStorage() {
-            if (gameData) {
-                localStorage.setItem('gameRoomData', JSON.stringify({
-                    rooms: gameData.rooms,
-                    machines: gameData.machines,
-                    machineGames: gameData.machineGames
-                }));
-            }
-        }
-
-        // 设置事件监听器
-        function setupEventListeners() {
-            if (elements.header) {
-                elements.header.addEventListener('click', handleHeaderClick);
-            }
-            
-            if (elements.confirmPassword) elements.confirmPassword.addEventListener('click', checkPassword);
-            if (elements.cancelPassword) elements.cancelPassword.addEventListener('click', () => {
-                elements.passwordModal.style.display = 'none';
-            });
-            if (elements.passwordInput) elements.passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    checkPassword();
-                }
-            });
-        }
-
-        // 处理标题点击（用于进入管理员模式）
-        function handleHeaderClick() {
-            const now = Date.now();
-            if (now - lastClickTime < 1000) {
-                clickCount++;
-            } else {
-                clickCount = 1;
-            }
-            lastClickTime = now;
-
-            if (clickCount >= 5) {
-                showPasswordModal();
-                clickCount = 0;
-            }
-        }
-
-        // 显示密码输入模态框
-        function showPasswordModal() {
-            if (!elements.passwordModal) return;
-            
-            elements.passwordInput.value = '';
-            elements.passwordModal.style.display = 'flex';
-            setTimeout(() => {
-                if (elements.passwordInput) {
-                    elements.passwordInput.focus();
-                }
-            }, 100);
-        }
-
-        // 检查密码
-        function checkPassword() {
-            if (!elements.passwordInput) return;
-            
-            const password = elements.passwordInput.value;
-            if (password === ADMIN_PASSWORD) {
-                window.location.href = 'admin.html';
-            } else {
-                alert('密码错误，请重试！');
-                elements.passwordInput.value = '';
-                elements.passwordInput.focus();
-            }
-        }
-
-        // 渲染游戏瀑布流
-        function renderGamesWaterfall() {
-            if (!elements.gamesWaterfall || !gameData) return;
-            
-            const container = elements.gamesWaterfall;
-            container.innerHTML = '';
-
-            const allGames = [...gameData.games];
-            allGames.sort((a, b) => a.name.localeCompare(b.name));
-
-            allGames.forEach(game => {
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
-                
-                gameCard.innerHTML = `
-                    <div class="game-image" style="background-image: url(${game.image})"></div>
-                    <div class="game-info">
-                        <div class="game-name">${game.name}</div>
-                        <div class="game-tags">
-                            ${game.tags.map(tag => `<span class="game-tag">${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(gameCard);
-            });
-        }
-
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            init();
-        });
     </script>
 </body>
 </html>
