@@ -1,232 +1,578 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>租金区间斜率计算</title>
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>设备租金管理</title>
+  <style>
+    * { box-sizing: border-box; }
     body {
-        font-family: Arial, sans-serif;
-        padding: 10px;
-        background: #f4f4f4;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 24px;
+      background: #f9fbfd;
+      color: #333;
+      margin: 0;
     }
-    .table-container {
-        overflow-x: auto;
-        margin-bottom: 20px;
-        background: white;
-        border-radius: 8px;
-        padding: 10px;
+    h1 {
+      text-align: center;
+      margin-bottom: 32px;
+      color: #2c3e50;
+      font-weight: 600;
     }
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        min-width: 600px;
+    #productsContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    th, td {
-        border: 1px solid #ccc;
-        padding: 6px;
-        text-align: center;
-        font-size: 14px;
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      overflow: hidden;
+      transition: transform 0.2s;
     }
-    th {
-        background: #f0f0f0;
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     }
-    .hidden {
-        display: none;
+    .card-header {
+      background: linear-gradient(135deg, #4A90E2, #5D8BF4);
+      color: white;
+      padding: 14px 16px;
+      font-size: 18px;
+      font-weight: 600;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .edit-product-btn {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .edit-product-btn:hover {
+      color: #ffd700;
+    }
+    .card-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .card-actions button {
+      padding: 4px 8px;
+      font-size: 12px;
+      margin: 0;
+    }
+
+    /* 规格标签：自动换行 */
+    .variant-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-bottom: 1px solid #edf2f7;
+      gap: 6px;
+    }
+    .variant-tab {
+      padding: 6px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 14px;
+      color: #64748b;
+      border-bottom: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 4px;
+    }
+    .variant-tab.active {
+      color: #4A90E2;
+      background: #eef4ff;
+      border-bottom-color: #4A90E2;
+      font-weight: 600;
+    }
+    .variant-tab.add {
+      color: #27ae60;
+      font-weight: bold;
+      margin-left: auto;
+    }
+    .edit-variant-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 0;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .edit-variant-btn:hover { color: #4A90E2; }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      padding: 16px;
+    }
+    .day-cell {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 4px;
+      text-align: center;
+      min-height: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .day-label {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #475569;
+      font-size: 13px;
+    }
+    .manual-input {
+      width: 60px;
+      padding: 4px;
+      font-size: 13px;
+      text-align: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      outline: none;
+    }
+    .manual-input:focus {
+      border-color: #4A90E2;
+      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    }
+    .auto-value {
+      font-size: 12px;
+      margin-top: 4px;
+      min-height: 16px;
+      font-weight: bold;
+    }
+    .auto-value.locked { color: #27ae60; }
+    .auto-value.uncomputable { color: #e74c3c; }
+    .auto-value:not(.locked):not(.uncomputable) { color: #e67e22; }
+
     button {
-        margin: 4px 2px;
-        padding: 6px 10px;
-        border: none;
-        background: #4CAF50;
-        color: white;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+      font-weight: 500;
     }
-    button:hover {
-        background: #45a049;
+    button:hover { background: #45a049; }
+    .delete-btn { background: #e74c3c; }
+    .delete-btn:hover { background: #c0392b; }
+
+    .floating-buttons {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
     }
-    input {
-        width: 80px;
-        padding: 4px;
-        font-size: 14px;
-        text-align: center;
+    .floating-buttons button {
+      width: 120px;
+      padding: 8px;
+      font-size: 14px;
     }
-    @media (max-width: 768px) {
-        th, td {
-            font-size: 12px;
-            padding: 4px;
-        }
-        input {
-            width: 60px;
-            font-size: 12px;
-        }
-        button {
-            padding: 4px 8px;
-            font-size: 12px;
-        }
+
+    #loadStatus {
+      text-align: center;
+      color: #e74c3c;
+      font-weight: bold;
+      margin-bottom: 16px;
     }
-    .delete-btn {
-        background: #e74c3c;
+
+    @media (max-width: 850px) {
+      #productsContainer {
+        grid-template-columns: 1fr;
+      }
     }
-    .delete-btn:hover {
-        background: #c0392b;
-    }
-</style>
+  </style>
 </head>
 <body>
 
-<h2>租金区间斜率计算</h2>
+<h1>设备租金管理</h1>
+<div id="loadStatus"></div>
+<div id="productsContainer"></div>
 
-<div class="table-container">
-    <table id="inputTable">
-        <thead>
-            <tr>
-                <th>天数</th>
-                <th>租金</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td data-days="1">1天</td>
-                <td><input type="number" id="rent1"></td>
-                <td><button class="delete-btn" onclick="deleteRent(1)">删除</button></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<div>
-    <button onclick="addRentColumn()">添加租期</button>
-    <button onclick="calculate()">计算</button>
-    <button onclick="toggleFormula()">显示/隐藏公式</button>
-</div>
-
-<p id="errorMessage" style="color:red;"></p>
-
-<div class="table-container">
-    <table id="resultTable">
-        <thead>
-            <tr>
-                <th>天数</th>
-                <th>总租金</th>
-                <th>日租金</th>
-                <th class="hidden">公式</th>
-                <th class="hidden">斜率</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div class="floating-buttons">
+  <button onclick="addNewProduct()">➕ 添加新品名</button>
+  <button onclick="exportData()">📤 导出 data.json</button>
+  <button onclick="copyJsonData()">📋 复制 JSON 数据</button>
 </div>
 
 <script>
-function truncateToTwoDecimals(num) {
-    return Math.floor(num * 100) / 100;
-}
+let allData = {};
 
-function addRentColumn() {
-    const days = prompt("请输入租期天数（正整数）");
-    if (!days || isNaN(days) || days <= 0) return;
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadData();
+  renderAllProducts();
+});
 
-    const tableBody = document.querySelector("#inputTable tbody");
-
-    const rents = [];
-    document.querySelectorAll('#inputTable td[data-days]').forEach(td => {
-        const d = parseInt(td.getAttribute('data-days'));
-        const value = document.getElementById(`rent${d}`).value;
-        rents.push({ days: d, value });
-    });
-
-    if (rents.some(r => r.days === parseInt(days))) {
-        alert("该租期已存在！");
-        return;
+async function loadData() {
+  const statusEl = document.getElementById('loadStatus');
+  try {
+    const res = await fetch('data.json');
+    if (res.ok) {
+      allData = await res.json();
+      statusEl.textContent = '✅ 已加载 data.json';
+      statusEl.style.color = '#27ae60';
+    } else {
+      allData = {};
+      statusEl.innerHTML = '⚠️ 未找到 <code>data.json</code>，使用空数据<br>请确保文件存在且通过 HTTP 服务器访问';
     }
-
-    rents.push({ days: parseInt(days), value: "" });
-
-    rents.sort((a, b) => a.days - b.days);
-
-    tableBody.innerHTML = "";
-    rents.forEach(r => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td data-days="${r.days}">${r.days}天</td>
-            <td><input type="number" id="rent${r.days}" value="${r.value}"></td>
-            <td><button class="delete-btn" onclick="deleteRent(${r.days})">删除</button></td>
-        `;
-        tableBody.appendChild(row);
-    });
+  } catch (err) {
+    console.error('加载 data.json 失败:', err);
+    allData = {};
+    statusEl.innerHTML = '❌ 加载 <code>data.json</code> 失败！<br>原因：' + err.message + '<br>请通过本地服务器（如 Live Server）访问';
+  }
 }
 
-function deleteRent(days) {
-    const tableBody = document.querySelector("#inputTable tbody");
-    const rows = Array.from(tableBody.querySelectorAll("tr"));
-    const filtered = rows.filter(row => parseInt(row.querySelector("td").getAttribute("data-days")) !== days);
+function validateRent(product, variant, day, value) {
+  const currentValues = allData[product]?.[variant] || {};
+  const entries = Object.entries(currentValues).map(([d, v]) => ({
+    day: parseInt(d),
+    rent: parseFloat(v)
+  })).filter(e => !isNaN(e.rent));
 
-    tableBody.innerHTML = "";
-    filtered.forEach(row => tableBody.appendChild(row));
-}
+  entries.push({ day: parseInt(day), rent: parseFloat(value) });
+  entries.sort((a, b) => a.day - b.day);
 
-function calculate() {
-    const rentValues = [];
-    document.querySelectorAll('#inputTable td[data-days]').forEach(td => {
-        const days = parseInt(td.getAttribute('data-days'));
-        const value = parseFloat(document.getElementById(`rent${days}`).value);
-        if (!isNaN(value)) {
-            rentValues.push({ days, value });
-        }
-    });
-
-    rentValues.sort((a, b) => a.days - b.days);
-
-    document.getElementById("errorMessage").textContent = "";
-    if (rentValues.length < 2) {
-        document.getElementById("errorMessage").textContent = "至少需要两个租金值才能计算！";
-        return;
+  for (let i = 1; i < entries.length; i++) {
+    if (entries[i].rent < entries[i - 1].rent) {
+      return {
+        valid: false,
+        message: `错误：${entries[i].day}天租金（¥${entries[i].rent}）低于${entries[i-1].day}天（¥${entries[i-1].rent}）！租金应随天数增加或持平。`
+      };
     }
-
-    const resultTableBody = document.querySelector("#resultTable tbody");
-    resultTableBody.innerHTML = "";
-
-    const first = rentValues[0];
-    resultTableBody.appendChild(makeRow(first.days, first.value, first.value / first.days, "有固定值", "无需计算"));
-
-    for (let i = 0; i < rentValues.length - 1; i++) {
-        const start = rentValues[i];
-        const end = rentValues[i + 1];
-        const slope = (end.value - start.value) / (end.days - start.days);
-
-        for (let day = start.days + 1; day < end.days; day++) {
-            const totalRent = start.value + (day - start.days) * slope;
-            const dailyRent = totalRent / day;
-            resultTableBody.appendChild(
-                makeRow(day, totalRent, dailyRent, 
-                `等于${start.days}天租金+(${day}天-${start.days}天)×${truncateToTwoDecimals(slope)}`, 
-                truncateToTwoDecimals(slope))
-            );
-        }
-
-        resultTableBody.appendChild(makeRow(end.days, end.value, end.value / end.days, "有固定值", "无需计算"));
-    }
+  }
+  return { valid: true };
 }
 
-function makeRow(days, total, daily, formula, slope) {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-        <td>${days}天</td>
-        <td>${truncateToTwoDecimals(total)}</td>
-        <td>${truncateToTwoDecimals(daily)}</td>
-        <td class="hidden">${formula}</td>
-        <td class="hidden">${slope}</td>
+function renderAllProducts() {
+  const container = document.getElementById('productsContainer');
+  container.innerHTML = '';
+
+  for (const productName in allData) {
+    const card = createProductCard(productName, allData[productName]);
+    container.appendChild(card);
+  }
+}
+
+function createProductCard(productName, variants) {
+  const card = document.createElement('div');
+  card.className = 'product-card';
+  card.dataset.product = productName;
+
+  const header = document.createElement('div');
+  header.className = 'card-header';
+  header.innerHTML = `
+    <div class="card-title">
+      ${productName}
+      <button class="edit-product-btn" onclick="editProductName(event, '${productName}')">✏️</button>
+    </div>
+    <div class="card-actions">
+      <button class="delete-btn" onclick="deleteProduct('${productName}')">🗑️ 删除</button>
+    </div>
+  `;
+  card.appendChild(header);
+
+  const tabs = document.createElement('div');
+  tabs.className = 'variant-tabs';
+  const variantNames = Object.keys(variants);
+  variantNames.forEach(vName => {
+    const tab = document.createElement('div');
+    tab.className = 'variant-tab';
+    tab.innerHTML = `
+      ${vName}
+      <button class="edit-variant-btn" onclick="editVariantName(event, '${productName}', '${vName}')">✏️</button>
     `;
-    return row;
+    tab.dataset.variant = vName;
+    tab.onclick = (e) => {
+      if (e.target.classList.contains('edit-variant-btn')) return;
+      tabs.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      switchVariant(productName, vName);
+    };
+    tabs.appendChild(tab);
+  });
+  if (variantNames.length > 0) {
+    tabs.firstChild.classList.add('active');
+  }
+
+  const addTab = document.createElement('div');
+  addTab.className = 'variant-tab add';
+  addTab.textContent = '+';
+  addTab.onclick = () => addNewVariant(productName);
+  tabs.appendChild(addTab);
+  card.appendChild(tabs);
+
+  const calendar = document.createElement('div');
+  calendar.className = 'calendar-grid';
+  calendar.dataset.product = productName;
+  calendar.dataset.variant = variantNames[0] || '';
+  if (variantNames[0]) {
+    renderCalendar(productName, variantNames[0], calendar);
+  }
+  card.appendChild(calendar);
+
+  return card;
 }
 
-function toggleFormula() {
-    document.querySelectorAll("#resultTable th:nth-child(4), #resultTable th:nth-child(5), #resultTable td:nth-child(4), #resultTable td:nth-child(5)")
-        .forEach(el => el.classList.toggle("hidden"));
+function switchVariant(productName, variantName) {
+  const calendar = document.querySelector(`.calendar-grid[data-product="${productName}"]`);
+  if (calendar) {
+    calendar.dataset.variant = variantName;
+    renderCalendar(productName, variantName, calendar);
+  }
+}
+
+function renderCalendar(productName, variantName, container) {
+  container.innerHTML = '';
+  const manualValues = allData[productName]?.[variantName] || {};
+
+  const lockedPoints = [];
+  for (let d = 1; d <= 30; d++) {
+    if (manualValues.hasOwnProperty(d)) {
+      lockedPoints.push({ day: d, value: parseFloat(manualValues[d]) });
+    }
+  }
+  lockedPoints.sort((a, b) => a.day - b.day);
+
+  const autoValues = {};
+  if (lockedPoints.length === 0) {
+    for (let d = 1; d <= 30; d++) autoValues[d] = null;
+  } else if (lockedPoints.length === 1) {
+    const p = lockedPoints[0];
+    autoValues[p.day] = p.value;
+    for (let d = 1; d <= 30; d++) {
+      if (d !== p.day) autoValues[d] = null;
+    }
+  } else {
+    const first = lockedPoints[0];
+    for (let d = 1; d < first.day; d++) autoValues[d] = null;
+    autoValues[first.day] = first.value;
+
+    for (let i = 0; i < lockedPoints.length - 1; i++) {
+      const start = lockedPoints[i];
+      const end = lockedPoints[i + 1];
+      const slope = (end.value - start.value) / (end.day - start.day);
+      for (let d = start.day + 1; d < end.day; d++) {
+        autoValues[d] = start.value + (d - start.day) * slope;
+      }
+      autoValues[end.day] = end.value;
+    }
+
+    const last = lockedPoints[lockedPoints.length - 1];
+    for (let d = last.day + 1; d <= 30; d++) autoValues[d] = null;
+  }
+
+  for (let day = 1; day <= 30; day++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell';
+
+    const label = document.createElement('div');
+    label.className = 'day-label';
+    label.textContent = `${day}天`;
+
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.step = '0.01';
+    input.className = 'manual-input';
+    input.dataset.product = productName;
+    input.dataset.variant = variantName;
+    input.dataset.day = day;
+    if (manualValues.hasOwnProperty(day)) {
+      input.value = manualValues[day];
+    }
+    input.addEventListener('blur', (e) => handleBlur(e.target));
+
+    const autoDiv = document.createElement('div');
+    autoDiv.className = 'auto-value';
+    const autoVal = autoValues[day];
+    if (manualValues.hasOwnProperty(day)) {
+      autoDiv.textContent = `¥${parseFloat(manualValues[day]).toFixed(2)}`;
+      autoDiv.classList.add('locked');
+    } else if (autoVal !== null && !isNaN(autoVal)) {
+      autoDiv.textContent = `¥${autoVal.toFixed(2)}`;
+    } else {
+      autoDiv.textContent = '—';
+      autoDiv.classList.add('uncomputable');
+    }
+
+    cell.appendChild(label);
+    cell.appendChild(input);
+    cell.appendChild(autoDiv);
+    container.appendChild(cell);
+  }
+}
+
+function handleBlur(inputEl) {
+  const product = inputEl.dataset.product;
+  const variant = inputEl.dataset.variant;
+  const day = parseInt(inputEl.dataset.day);
+  const value = inputEl.value.trim();
+
+  if (!allData[product]) allData[product] = {};
+  if (!allData[product][variant]) allData[product][variant] = {};
+
+  if (value === '') {
+    delete allData[product][variant][day];
+    const calendar = document.querySelector(`.calendar-grid[data-product="${product}"]`);
+    if (calendar) renderCalendar(product, variant, calendar);
+    return;
+  }
+
+  const num = parseFloat(value);
+  if (isNaN(num)) {
+    alert('请输入有效数字！');
+    inputEl.value = '';
+    delete allData[product][variant][day];
+    return;
+  }
+
+  const validationResult = validateRent(product, variant, day, num);
+  if (!validationResult.valid) {
+    alert(validationResult.message);
+    inputEl.value = '';
+    delete allData[product][variant][day];
+    const calendar = document.querySelector(`.calendar-grid[data-product="${product}"]`);
+    if (calendar) renderCalendar(product, variant, calendar);
+    return;
+  }
+
+  allData[product][variant][day] = num;
+
+  const calendar = document.querySelector(`.calendar-grid[data-product="${product}"]`);
+  if (calendar) {
+    renderCalendar(product, variant, calendar);
+  }
+}
+
+// ========== 新增：编辑品名 ==========
+function editProductName(event, oldName) {
+  event.stopPropagation();
+  const newName = prompt('修改品名', oldName);
+  if (!newName || !newName.trim() || newName.trim() === oldName) return;
+  const cleanName = newName.trim();
+  if (allData[cleanName]) {
+    alert('该品名已存在！');
+    return;
+  }
+
+  // 重建 allData（保持顺序）
+  const newData = {};
+  for (const key in allData) {
+    if (key === oldName) {
+      newData[cleanName] = allData[key];
+    } else {
+      newData[key] = allData[key];
+    }
+  }
+  allData = newData;
+  renderAllProducts();
+}
+
+function editVariantName(event, productName, oldName) {
+  event.stopPropagation();
+  const newName = prompt('修改规格名称', oldName);
+  if (!newName || !newName.trim() || newName.trim() === oldName) return;
+  const cleanName = newName.trim();
+  if (allData[productName][cleanName]) {
+    alert('该规格名称已存在！');
+    return;
+  }
+
+  const newVariants = {};
+  for (const key in allData[productName]) {
+    if (key === oldName) {
+      newVariants[cleanName] = allData[productName][key];
+    } else {
+      newVariants[key] = allData[productName][key];
+    }
+  }
+  allData[productName] = newVariants;
+  renderAllProducts();
+}
+
+function addNewProduct() {
+  const name = prompt('输入新品名（如 Quest 3 Pro）');
+  if (!name || !name.trim()) return;
+  const clean = name.trim();
+  if (allData[clean]) {
+    alert('该品名已存在！');
+    return;
+  }
+  allData[clean] = {};
+  renderAllProducts();
+}
+
+function addNewVariant(productName) {
+  const name = prompt('输入新规格（如 512G）');
+  if (!name || !name.trim()) return;
+  const clean = name.trim();
+  if (allData[productName][clean]) {
+    alert('该规格已存在！');
+    return;
+  }
+  allData[productName][clean] = {};
+  renderAllProducts();
+}
+
+function deleteProduct(productName) {
+  if (!confirm(`确定删除「${productName}」及其所有规格？`)) return;
+  delete allData[productName];
+  renderAllProducts();
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'data.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function copyJsonData() {
+  try {
+    const jsonStr = JSON.stringify(allData, null, 2);
+    await navigator.clipboard.writeText(jsonStr);
+    alert('✅ JSON 数据已复制到剪贴板！');
+  } catch (err) {
+    console.error('复制失败:', err);
+    alert('❌ 复制失败，请手动复制。打开控制台查看错误。');
+  }
 }
 </script>
 
