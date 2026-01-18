@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>租赁退款可视化日历 · 蓝色科技版</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: linear-gradient(135deg, #e8f4fc 0%, #d1e7f5 100%);
+            color: #0d47a1;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(25, 118, 210, 0.2);
+            overflow: hidden;
+        }
+        .header {
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(90deg, #1976D2, #0288D1);
+            color: white;
+        }
+
+        .input-section {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            background: #f8fbff;
+            border-bottom: 1px solid #e0ecf8;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+            max-width: 200px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #fafdff;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1976D2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.25);
+        }
+
+        .action-bar {
+            text-align: center;
+            padding: 12px 0;
+            background: #e3f2fd;
+        }
+        .btn {
+            padding: 8px 24px;
+            background: #1976D2;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn:hover {
+            background: #0d47a1;
+            transform: scale(1.03);
+        }
+
+        .calendar-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 10px 20px;
+        }
+        .nav-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            background: #bbdefb;
+            border-radius: 50%;
+            font-weight: bold;
+            color: #0288D1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover {
+            background: #90caf9;
+        }
+
+        /* ✅ 修复滚动截断问题 */
+        .calendar-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 0 10px 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+        }
+        .calendar-container {
+            display: inline-flex;
+            gap: 20px;
+            padding: 10px 0;
+            flex-wrap: nowrap;
+            min-width: 100%;
+        }
+        .calendar-month {
+            width: 280px;
+            min-width: 280px; /* ✅ 防止月份被压缩 */
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.12);
+            padding: 12px;
+            position: relative;
+        }
+
+        .month-header {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 8px 0 12px;
+            color: #0288D1;
+        }
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: #546e7a;
+            margin-bottom: 6px;
+        }
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .day-cell {
+            height: 38px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 13px;
+            position: relative;
+            transition: all 0.2s;
+            user-select: none;
+            padding: 2px;
+        }
+        .day-cell.outside {
+            visibility: hidden;
+        }
+        .day-cell.selectable {
+            cursor: pointer;
+            background: #e1f5fe;
+        }
+        .day-cell.selected-temp {
+            background: #81d4fa !important;
+            animation: pulse 0.4s;
+        }
+        .day-cell.selected-view {
+            background: #C8E6C9 !important;
+            border-bottom: 3px solid #4CAF50;
+            font-weight: bold;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(25, 118, 210, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); }
+        }
+        .day-cell.today {
+            border: 2px solid #1976D2;
+            background: #e3f2fd !important;
+            font-weight: bold;
+        }
+        .day-cell.start {
+            background: #1976D2 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .day-cell.end {
+            background: #304FFE !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .day-cell.in-range {
+            background: #E3F2FD;
+            cursor: pointer;
+        }
+        .day-cell.sign-date {
+            background: #B3E5FC !important;
+            color: #01579b !important;
+            font-weight: bold;
+        }
+        .day-cell.return-date {
+            background: #D1C4E9 !important;
+            color: #4527A0 !important;
+            font-weight: bold;
+        }
+        .label-badge {
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            background: white;
+            padding: 0 4px;
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+        .refund-amount {
+            font-size: 10px;
+            font-weight: bold;
+            color: #FF6D00;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        .detail-info {
+            padding: 16px 20px;
+            background: #f0f7ff;
+            border-top: 1px solid #e0ecf8;
+            text-align: center;
+            font-size: 15px;
+            color: #0d47a1;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        .detail-info strong {
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .bottom-panel {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0;
+            background: #f8fbff;
+            border-top: 1px solid #e0ecf8;
+        }
+        .rules-box {
+            flex: 1;
+            min-width: 240px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-right: 1px solid #e0ecf8;
+        }
+        .rules-box h3 {
+            margin-top: 0;
+            color: #1976D2;
+            font-size: 15px;
+        }
+        .rule-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .formula-box {
+            flex: 2;
+            min-width: 300px;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Consolas', monospace;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #0d47a1;
+        }
+
+        @media (max-width: 768px) {
+            .bottom-panel {
+                flex-direction: column;
+            }
+            .rules-box {
+                border-right: none;
+                border-bottom: 1px solid #e0ecf8;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>租赁退款可视化日历</h2>
+        </div>
+
+        <div class="input-section">
+            <div class="form-group">
+                <label for="startDate">起租日</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="form-group">
+                <label for="endDate">计划归还日</label>
+                <input type="date" id="endDate">
+            </div>
+            <div class="form-group">
+                <label for="totalRent">总租金（元）</label>
+                <input type="number" id="totalRent" step="0.01" placeholder="200">
+            </div>
+            <div class="form-group">
+                <label for="shippingFee">发出运费（元）</label>
+                <input type="number" id="shippingFee" step="0.01" placeholder="20">
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn" onclick="resetAndSelect()">重选日期</button>
+        </div>
+
+        <div class="calendar-nav">
+            <button class="nav-btn" onclick="adjustMonthRange(-1)">+</button>
+            <div id="monthRangeText" style="font-size:14px; color:#0288D1;"></div>
+            <button class="nav-btn" onclick="adjustMonthRange(1)">+</button>
+        </div>
+
+        <div class="calendar-wrapper">
+            <div class="calendar-container" id="calendarContainer"></div>
+        </div>
+
+        <div class="detail-info" id="detailInfo">
+            请选择起止日期，并点击租用中某日查看详情。
+        </div>
+
+        <div class="bottom-panel">
+            <div class="rules-box">
+                <h3>退款计算规则</h3>
+                <div class="rule-item">
+                    日均租金 = (总租金 - 发出运费) ÷ 总租期
+                </div>
+                <div class="rule-item">
+                    提前退款 = (剩余天数 ÷ 2) × 日均租金
+                </div>
+                <p style="font-size:12px; color:#555; margin-top:10px;">
+                    注：剩余天数 = 计划归还日 - 实际归还日（到期日当天归还 = 0 天）
+                </p>
+            </div>
+            <div class="formula-box" id="formulaDisplay">
+                点击租用中的日期以查看计算公式。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MS_PER_DAY = 1000 * 60 * 60 * 24; // ✅ 统一时间常量
+
+        let selectMode = false;
+        let selectingStart = true;
+        let cachedDailyRent = 0;
+        const today = new Date();
+        const todayStr = formatDate(today);
+        let monthOffsetRange = [-1, 0, 1]; // 初始三个月
+        let currentViewDate = null;
+
+        function formatDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function initDefaults() {
+            // 今天签收，明天起租，租期15天
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() + 1);
+
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 14); // 15天租期
+
+            document.getElementById('startDate').value = formatDate(startDate);
+            document.getElementById('endDate').value = formatDate(endDate);
+            document.getElementById('totalRent').value = '200';
+            document.getElementById('shippingFee').value = '20';
+
+            bindEvents();
+            onInputChanged();
+        }
+
+        function bindEvents() {
+            ['startDate', 'endDate', 'totalRent', 'shippingFee'].forEach(id => {
+                document.getElementById(id).addEventListener('input', onInputChanged);
+            });
+        }
+
+        function resetAndSelect() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            selectMode = true;
+            selectingStart = true;
+            document.getElementById('detailInfo').innerHTML = '请先点击日历设置起租日，再点击设置归还日。';
+            document.getElementById('formulaDisplay').innerHTML = '点击租用中的日期以查看计算公式。';
+            renderCalendar();
+        }
+
+        function onInputChanged() {
+            const startStr = document.getElementById('startDate').value;
+            const endStr = document.getElementById('endDate').value;
+            const totalRent = parseFloat(document.getElementById('totalRent').value) || 0;
+            const shippingFee = parseFloat(document.getElementById('shippingFee').value) || 0;
+
+            if (!startStr || !endStr) {
+                document.getElementById('detailInfo').innerHTML = '请设置完整的起止日期。';
+                return;
+            }
+
+            const startDate = new Date(startStr);
+            const endDate = new Date(endStr);
+            const totalPeriod = Math.ceil((endDate - startDate) / MS_PER_DAY) + 1;
+            cachedDailyRent = (totalRent - shippingFee) / totalPeriod;
+
+            currentViewDate = (today >= startDate && today <= endDate) ? today : startDate;
+            updateDetailInfo(startDate, endDate, currentViewDate);
+            renderCalendar();
+        }
+
+        function adjustMonthRange(direction) {
+            if (direction === -1) {
+                const min = Math.min(...monthOffsetRange);
+                if (monthOffsetRange.length < 6) {
+                    monthOffsetRange = [min - 1, ...monthOffsetRange];
+                }
+            } else if (direction === 1) {
+                const max = Math.max(...monthOffsetRange);
+                if (monthOffsetRange.length < 6) {
+                    monthOffsetRange = [...monthOffsetRange, max + 1];
+                }
+            }
+            renderCalendar();
+            updateMonthRangeText();
+        }
+
+        function updateMonthRangeText() {
+            const now = new Date();
+            const months = monthOffsetRange.map(off => {
+                const d = new Date(now.getFullYear(), now.getMonth() + off, 1);
+                return `${d.getFullYear()}年${d.getMonth()+1}月`;
+            });
+            document.getElementById('monthRangeText').textContent = months.join(' · ');
+        }
+
+        function renderCalendar() {
+            const startStr = document.getElementById('startDate').value;
+            const endStr = document.getElementById('endDate').value;
+            const startDate = startStr ? new Date(startStr) : null;
+            const endDate = endStr ? new Date(endStr) : null;
+
+            const signDate = startDate ? new Date(startDate) : null;
+            if (signDate) signDate.setDate(startDate.getDate() - 1);
+            const returnDate = endDate ? new Date(endDate) : null;
+            if (returnDate) returnDate.setDate(endDate.getDate() + 1);
+
+            const now = new Date();
+            const months = monthOffsetRange.map(offset => 
+                new Date(now.getFullYear(), now.getMonth() + offset, 1)
+            );
+
+            const container = document.getElementById('calendarContainer');
+            container.innerHTML = '';
+
+            months.forEach(monthDate => {
+                const year = monthDate.getFullYear();
+                const month = monthDate.getMonth();
+
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'calendar-month';
+
+                const monthHeader = document.createElement('div');
+                monthHeader.className = 'month-header';
+                const monthNames = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+                monthHeader.textContent = `${year}年 ${monthNames[month]}`;
+                monthDiv.appendChild(monthHeader);
+
+                const weekdays = document.createElement('div');
+                weekdays.className = 'weekdays';
+                ['日','一','二','三','四','五','六'].forEach(day => {
+                    const el = document.createElement('div');
+                    el.textContent = day;
+                    weekdays.appendChild(el);
+                });
+                monthDiv.appendChild(weekdays);
+
+                const daysGrid = document.createElement('div');
+                daysGrid.className = 'days-grid';
+
+                const firstDay = new Date(year, month, 1);
+                const startDayOfWeek = firstDay.getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                for (let i = 0; i < startDayOfWeek; i++) {
+                    const empty = document.createElement('div');
+                    empty.className = 'day-cell outside';
+                    daysGrid.appendChild(empty);
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(year, month, day);
+                    daysGrid.appendChild(createDayCell(date, startDate, endDate, signDate, returnDate));
+                }
+
+                monthDiv.appendChild(daysGrid);
+                container.appendChild(monthDiv);
+            });
+
+            updateMonthRangeText();
+        }
+
+        function createDayCell(date, startDate, endDate, signDate, returnDate) {
+            const dayCell = document.createElement('div');
+            const day = date.getDate();
+            const dateStr = formatDate(date);
+            dayCell.textContent = day;
+            dayCell.className = 'day-cell';
+            dayCell.dataset.date = dateStr;
+
+            const isToday = dateStr === todayStr;
+            const isStart = startDate && dateStr === formatDate(startDate);
+            const isEnd = endDate && dateStr === formatDate(endDate);
+            const isSign = signDate && dateStr === formatDate(signDate);
+            const isReturn = returnDate && dateStr === formatDate(returnDate);
+            const inRange = startDate && endDate && date >= startDate && date <= endDate;
+
+            if (isToday) dayCell.classList.add('today');
+            if (isStart) dayCell.classList.add('start');
+            if (isEnd) dayCell.classList.add('end');
+            if (isSign) dayCell.classList.add('sign-date');
+            if (isReturn) dayCell.classList.add('return-date');
+            if (inRange && !isStart && !isEnd) dayCell.classList.add('in-range');
+
+            if (isSign) addBadge(dayCell, '签收');
+            if (isStart) addBadge(dayCell, '起租');
+            if (inRange && !isStart && !isEnd) addBadge(dayCell, '租用中');
+            if (isEnd) addBadge(dayCell, '到期');
+            if (isReturn) addBadge(dayCell, '寄出');
+
+            if (inRange) {
+                // ✅ 修正：剩余天数 = 到期日 - 归还日（不包含到期日）
+                const remainingDays = Math.max(0, Math.floor((endDate - date) / MS_PER_DAY));
+                const refund = (remainingDays / 2) * cachedDailyRent;
+                const amountEl = document.createElement('div');
+                amountEl.className = 'refund-amount';
+                amountEl.textContent = `¥${refund.toFixed(2)}`;
+                dayCell.appendChild(amountEl);
+            }
+
+            if (selectMode) {
+                if (!isStart && !isEnd) {
+                    dayCell.classList.add('selectable');
+                    dayCell.addEventListener('click', () => {
+                        dayCell.classList.add('selected-temp');
+                        setTimeout(() => dayCell.classList.remove('selected-temp'), 300);
+
+                        if (selectingStart) {
+                            document.getElementById('startDate').value = dateStr;
+                            selectingStart = false;
+                        } else {
+                            document.getElementById('endDate').value = dateStr;
+                            selectMode = false;
+                            selectingStart = true;
+                        }
+                        onInputChanged();
+                    });
+                }
+            } else if (inRange) {
+                dayCell.addEventListener('click', () => {
+                    document.querySelectorAll('.day-cell.selected-view').forEach(el => {
+                        el.classList.remove('selected-view');
+                    });
+                    dayCell.classList.add('selected-view');
+
+                    currentViewDate = date;
+                    updateDetailInfo(startDate, endDate, date);
+                    updateFormula(date);
+                });
+            }
+
+            return dayCell;
+        }
+
+        function addBadge(cell, text) {
+            const badge = document.createElement('div');
+            badge.className = 'label-badge';
+            badge.textContent = text;
+            cell.appendChild(badge);
+        }
+
+        function updateDetailInfo(startDate, endDate, viewDate) {
+            if (!startDate || !endDate || !viewDate) return;
+
+            const totalPeriod = Math.ceil((endDate - startDate) / MS_PER_DAY) + 1;
+            const remainingDays = Math.max(0, Math.floor((endDate - viewDate) / MS_PER_DAY)); // ✅ 修正
+            const refund = (remainingDays / 2) * cachedDailyRent;
+
+            const detailHTML = `
+                当前租期：<strong>${totalPeriod} 天</strong> • 
+                已选归还日：<strong>${formatDate(viewDate)}</strong> • 
+                剩余天数：<strong>${remainingDays} 天</strong> • 
+                可退金额：<strong>¥${refund.toFixed(2)}</strong>
+            `;
+            document.getElementById('detailInfo').innerHTML = detailHTML;
+        }
+
+        function updateFormula(date) {
+            const startStr = document.getElementById('startDate').value;
+            const endStr = document.getElementById('endDate').value;
+            const totalRent = parseFloat(document.getElementById('totalRent').value) || 0;
+            const shippingFee = parseFloat(document.getElementById('shippingFee').value) || 0;
+
+            if (!startStr || !endStr) return;
+
+            const startDate = new Date(startStr);
+            const endDate = new Date(endStr);
+            const totalPeriod = Math.ceil((endDate - startDate) / MS_PER_DAY) + 1;
+            const dailyRent = (totalRent - shippingFee) / totalPeriod;
+            const remainingDays = Math.max(0, Math.floor((endDate - date) / MS_PER_DAY)); // ✅ 修正
+            const refund = (remainingDays / 2) * dailyRent;
+
+            const formula = `
+退款金额 = (剩余天数 ÷ 2) × 日均租金<br>
+= (${remainingDays} ÷ 2) × ${(dailyRent).toFixed(2)}<br>
+= ¥${refund.toFixed(2)}
+            `.trim();
+
+            document.getElementById('formulaDisplay').innerHTML = formula;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDefaults();
+        });
+    </script>
+</body>
+</html>
