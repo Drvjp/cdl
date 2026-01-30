@@ -32,12 +32,24 @@
             background-color: #0055aa;
         }
         .frame-container {
+            position: relative; /* 关键：为绝对定位子元素提供参考 */
             width: 100%;
             height: 1000px;
             border: 1px solid #ccc;
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .tool-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none; /* 初始全部隐藏 */
+        }
+        .tool-frame.active {
+            display: block; /* 通过 class 切换显示 */
         }
         iframe {
             width: 100%;
@@ -65,27 +77,54 @@
     <h1>📝 柴哒赁常用工具汇总</h1>
 
     <div class="nav">
-        <button onclick="loadPage('tiqianguihuan.html')">提前归还计算器</button>
-        <button onclick="loadPage('xielv.html')">斜率计算器</button>
-        <button onclick="loadPage('yunfei.html')">运费计算器</button>
-	<button onclick="loadPage('zuqi.html')">租期日历计算器</button>
-        <button onclick="clearFrame()">清空</button>
+        <button onclick="showFrame('tiqianguihuan')">提前归还计算器</button>
+        <button onclick="showFrame('xielv')">斜率计算器</button>
+        <button onclick="showFrame('yunfei')">运费计算器</button>
+        <button onclick="showFrame('zuqi')">租期日历计算器</button>
+        <button onclick="clearAllFrames()">清空</button>
     </div>
 
     <div class="frame-container">
-        <iframe id="contentFrame" src="" frameborder="0"></iframe>
+        <!-- 每个工具独立容器，预加载但初始隐藏 -->
+        <div id="tiqianguihuan-frame" class="tool-frame">
+            <iframe src="tiqianguihuan.html" frameborder="0"></iframe>
+        </div>
+        <div id="xielv-frame" class="tool-frame">
+            <iframe src="xielv.html" frameborder="0"></iframe>
+        </div>
+        <div id="yunfei-frame" class="tool-frame">
+            <iframe src="yunfei.html" frameborder="0"></iframe>
+        </div>
+        <div id="zuqi-frame" class="tool-frame">
+            <iframe src="zuqi.html" frameborder="0"></iframe>
+        </div>
     </div>
 
-    <!-- 返回主页按钮（在 iframe 里也会显示） -->
     <a href="index.html" class="home-btn">← 返回主页</a>
 
     <script>
-        function loadPage(url) {
-            document.getElementById('contentFrame').src = url;
+        // 切换显示指定工具帧
+        function showFrame(toolId) {
+            // 隐藏所有工具帧
+            document.querySelectorAll('.tool-frame').forEach(frame => {
+                frame.classList.remove('active');
+            });
+            // 显示目标工具帧
+            const targetFrame = document.getElementById(`${toolId}-frame`);
+            if (targetFrame) targetFrame.classList.add('active');
         }
-        function clearFrame() {
-            document.getElementById('contentFrame').src = '';
+
+        // 清空：隐藏所有工具帧
+        function clearAllFrames() {
+            document.querySelectorAll('.tool-frame').forEach(frame => {
+                frame.classList.remove('active');
+            });
         }
+
+        // 页面加载后默认显示第一个工具（可选）
+        window.addEventListener('DOMContentLoaded', () => {
+            showFrame('tiqianguihuan'); // 默认显示“提前归还计算器”
+        });
     </script>
 </body>
 </html>
