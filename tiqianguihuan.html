@@ -181,11 +181,6 @@
             background: #81d4fa !important;
             animation: pulse 0.4s;
         }
-        .day-cell.selected-view {
-            background: #C8E6C9 !important;
-            border-bottom: 3px solid #4CAF50;
-            font-weight: bold;
-        }
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.4); }
             70% { box-shadow: 0 0 0 8px rgba(25, 118, 210, 0); }
@@ -210,15 +205,11 @@
             background: #E3F2FD;
             cursor: pointer;
         }
-        .day-cell.sign-date {
-            background: #B3E5FC !important;
-            color: #01579b !important;
+        .day-cell.estimated-sign-date {
+            background: #FFE082 !important;
+            border-bottom: 3px solid #FF8F00;
             font-weight: bold;
-        }
-        .day-cell.return-date {
-            background: #D1C4E9 !important;
-            color: #4527A0 !important;
-            font-weight: bold;
+            color: #E65100;
         }
         .label-badge {
             position: absolute;
@@ -329,8 +320,8 @@
                 <input type="number" id="totalRent" step="0.01" placeholder="200">
             </div>
             <div class="form-group">
-                <label for="shippingFee">发出运费（元）</label>
-                <input type="number" id="shippingFee" step="0.01" placeholder="20">
+                <label for="estimatedSignDate">预估商家签收日</label>
+                <input type="date" id="estimatedSignDate">
             </div>
         </div>
 
@@ -349,24 +340,24 @@
         </div>
 
         <div class="detail-info" id="detailInfo">
-            请选择起止日期，并点击租用中某日作为提前归还的商家签收日查看详情。
+            请选择起止日期，并点击租用中某日作为预估商家签收日查看详情。
         </div>
 
         <div class="bottom-panel">
             <div class="rules-box">
                 <h3>退款计算规则</h3>
                 <div class="rule-item">
-                    日均租金 = (总租金 - 发出运费) ÷ 总租期
+                    日均租金 = 总租金 ÷ 总租期
                 </div>
                 <div class="rule-item">
                     提前退款 = 剩余天数 × 日均租金 × 70%
                 </div>
                 <p style="font-size:12px; color:#555; margin-top:10px;">
-                    注：总租期 = 起租日到计划归还日（含首尾）；剩余天数 = 计划归还日 - 商家签收日（计划归还日当天签收 = 0 天）。按提前归还的商家签收日截止计算。
+                    注：总租期 = 起租日到计划归还日（含首尾）；剩余天数 = 计划归还日 - 预估商家签收日（计划归还日当天签收 = 0 天）。按预估商家签收日截止计算。
                 </p>
             </div>
             <div class="formula-box" id="formulaDisplay">
-                点击租用中的日期，按该日商家签收计算退款。
+                点击租用中的日期，按该日作为预估商家签收日计算退款。
             </div>
         </div>
     </div>
@@ -411,17 +402,20 @@
             const endDate = new Date(startDate);
             endDate.setDate(startDate.getDate() + 14);
 
+            const estimatedSign = new Date(startDate);
+            estimatedSign.setDate(startDate.getDate() + 7);
+
             document.getElementById('startDate').value = formatDate(startDate);
             document.getElementById('endDate').value = formatDate(endDate);
             document.getElementById('totalRent').value = '200';
-            document.getElementById('shippingFee').value = '20';
+            document.getElementById('estimatedSignDate').value = formatDate(estimatedSign);
 
             bindEvents();
             onInputChanged();
         }
 
         function bindEvents() {
-            ['startDate', 'endDate', 'totalRent', 'shippingFee'].forEach(id => {
+            ['startDate', 'endDate', 'totalRent', 'estimatedSignDate'].forEach(id => {
                 document.getElementById(id).addEventListener('input', onInputChanged);
             });
         }
@@ -429,21 +423,23 @@
         function resetAndSelect() {
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
+            document.getElementById('estimatedSignDate').value = '';
             selectMode = true;
             selectingStart = true;
             document.getElementById('detailInfo').innerHTML = '请先点击日历设置起租日，再点击设置计划归还日。';
-            document.getElementById('formulaDisplay').innerHTML = '点击租用中的日期，按该日商家签收计算退款。';
+            document.getElementById('formulaDisplay').innerHTML = '点击租用中的日期，按该日作为预估商家签收日计算退款。';
             renderCalendar();
         }
 
         function onInputChanged() {
             const startStr = document.getElementById('startDate').value;
             const endStr = document.getElementById('endDate').value;
+            let signStr = document.getElementById('estimatedSignDate').value;
             const totalRent = parseFloat(document.getElementById('totalRent').value) || 0;
-            const shippingFee = parseFloat(document.getElementById('shippingFee').value) || 0;
 
             if (!startStr || !endStr) {
                 document.getElementById('detailInfo').innerHTML = '请设置完整的起止日期。';
+                document.getElementById('formulaDisplay').innerHTML = '点击租用中的日期，按该日作为预估商家签收日计算退款。';
                 renderCalendar();
                 return;
             }
@@ -454,16 +450,54 @@
             if (endDate < startDate) {
                 cachedDailyRent = 0;
                 document.getElementById('detailInfo').innerHTML = '计划归还日不能早于起租日。';
+                document.getElementById('formulaDisplay').innerHTML = '';
                 renderCalendar();
                 return;
             }
 
-            const totalPeriod = Math.ceil((endDate - startDate) / MS_PER_DAY) + 1;
-            cachedDailyRent = (totalRent - shippingFee) / totalPeriod;
+            // 设置预估签收日的 min/max
+            const signInput = document.getElementById('estimatedSignDate');
+            signInput.min = startStr;
+            signInput.max = endStr;
 
-            const todayDate = parseDate(todayStr);
-            currentViewDate = (todayDate >= startDate && todayDate <= endDate) ? todayDate : startDate;
-            updateDetailInfo(startDate, endDate, currentViewDate);
+            // 如果预估签收日为空或超出范围，则修正
+            if (!signStr) {
+                signStr = startStr;
+                signInput.value = signStr;
+            }
+            let signDate = parseDate(signStr);
+            if (signDate < startDate) {
+                signDate = new Date(startDate);
+                signInput.value = formatDate(signDate);
+            } else if (signDate > endDate) {
+                signDate = new Date(endDate);
+                signInput.value = formatDate(signDate);
+            }
+
+            const totalPeriod = Math.ceil((endDate - startDate) / MS_PER_DAY) + 1;
+            cachedDailyRent = totalRent / totalPeriod;
+            const remainingDays = getRemainingDays(endDate, signDate);
+            const refund = calculateRefund(remainingDays);
+
+            // 更新详情
+            const detailHTML = `
+                当前租期：<strong>${totalPeriod} 天</strong> • 
+                预估商家签收日：<strong>${formatDate(signDate)}</strong> • 
+                剩余天数：<strong>${remainingDays} 天</strong> • 
+                可退金额：<strong>¥${refund.toFixed(2)}</strong>
+            `;
+            document.getElementById('detailInfo').innerHTML = detailHTML;
+
+            // 更新公式
+            const formula = `
+                日均租金 = 总租金 ÷ 总租期 = ${totalRent.toFixed(2)} ÷ ${totalPeriod} = ${cachedDailyRent.toFixed(2)} 元/天<br>
+                剩余天数 = 计划归还日 - 预估商家签收日 = ${formatDate(endDate)} - ${formatDate(signDate)} = ${remainingDays} 天<br>
+                退款金额 = 剩余天数 × 日均租金 × 70%<br>
+                = ${remainingDays} × ${cachedDailyRent.toFixed(2)} × 0.7<br>
+                = <strong>¥${refund.toFixed(2)}</strong>
+            `;
+            document.getElementById('formulaDisplay').innerHTML = formula;
+
             renderCalendar();
         }
 
@@ -495,13 +529,10 @@
         function renderCalendar() {
             const startStr = document.getElementById('startDate').value;
             const endStr = document.getElementById('endDate').value;
+            const signStr = document.getElementById('estimatedSignDate').value;
             const startDate = startStr ? parseDate(startStr) : null;
             const endDate = endStr ? parseDate(endStr) : null;
-
-            const signDate = startDate ? new Date(startDate) : null;
-            if (signDate) signDate.setDate(startDate.getDate() - 1);
-            const returnDate = endDate ? new Date(endDate) : null;
-            if (returnDate) returnDate.setDate(endDate.getDate() + 1);
+            const signDate = signStr ? parseDate(signStr) : null;
 
             const now = new Date();
             const months = monthOffsetRange.map(offset =>
@@ -548,7 +579,7 @@
 
                 for (let day = 1; day <= daysInMonth; day++) {
                     const date = new Date(year, month, day);
-                    daysGrid.appendChild(createDayCell(date, startDate, endDate, signDate, returnDate));
+                    daysGrid.appendChild(createDayCell(date, startDate, endDate, signDate));
                 }
 
                 monthDiv.appendChild(daysGrid);
@@ -558,7 +589,7 @@
             updateMonthRangeText();
         }
 
-        function createDayCell(date, startDate, endDate, signDate, returnDate) {
+        function createDayCell(date, startDate, endDate, signDate) {
             const dayCell = document.createElement('div');
             const day = date.getDate();
             const dateStr = formatDate(date);
@@ -569,22 +600,19 @@
             const isToday = dateStr === todayStr;
             const isStart = startDate && dateStr === formatDate(startDate);
             const isEnd = endDate && dateStr === formatDate(endDate);
-            const isSign = signDate && dateStr === formatDate(signDate);
-            const isReturn = returnDate && dateStr === formatDate(returnDate);
+            const isEstimatedSign = signDate && dateStr === formatDate(signDate);
             const inRange = startDate && endDate && date >= startDate && date <= endDate;
 
             if (isToday) dayCell.classList.add('today');
             if (isStart) dayCell.classList.add('start');
             if (isEnd) dayCell.classList.add('end');
-            if (isSign) dayCell.classList.add('sign-date');
-            if (isReturn) dayCell.classList.add('return-date');
             if (inRange && !isStart && !isEnd) dayCell.classList.add('in-range');
+            if (isEstimatedSign) dayCell.classList.add('estimated-sign-date');
 
-            if (isSign) addBadge(dayCell, '签收');
             if (isStart) addBadge(dayCell, '起租');
             if (inRange && !isStart && !isEnd) addBadge(dayCell, '租用中');
             if (isEnd) addBadge(dayCell, '到期');
-            if (isReturn) addBadge(dayCell, '寄出');
+            if (isEstimatedSign) addBadge(dayCell, '预估签收');
 
             if (inRange) {
                 const remainingDays = getRemainingDays(endDate, date);
@@ -615,14 +643,8 @@
                 }
             } else if (inRange) {
                 dayCell.addEventListener('click', () => {
-                    document.querySelectorAll('.day-cell.selected-view').forEach(el => {
-                        el.classList.remove('selected-view');
-                    });
-                    dayCell.classList.add('selected-view');
-
-                    currentViewDate = date;
-                    updateDetailInfo(startDate, endDate, date);
-                    updateFormula(date);
+                    document.getElementById('estimatedSignDate').value = dateStr;
+                    onInputChanged();
                 });
             }
 
@@ -634,47 +656,6 @@
             badge.className = 'label-badge';
             badge.textContent = text;
             cell.appendChild(badge);
-        }
-
-        function updateDetailInfo(startDate, endDate, viewDate) {
-            if (!startDate || !endDate || !viewDate) return;
-
-            const totalPeriod = Math.ceil((endDate - startDate) / MS_PER_DAY) + 1;
-            const remainingDays = getRemainingDays(endDate, viewDate);
-            const refund = calculateRefund(remainingDays);
-
-            const detailHTML = `
-                当前租期：<strong>${totalPeriod} 天</strong> • 
-                商家签收日：<strong>${formatDate(viewDate)}</strong> • 
-                剩余天数：<strong>${remainingDays} 天</strong> • 
-                可退金额：<strong>¥${refund.toFixed(2)}</strong>
-            `;
-            document.getElementById('detailInfo').innerHTML = detailHTML;
-        }
-
-        function updateFormula(date) {
-            const startStr = document.getElementById('startDate').value;
-            const endStr = document.getElementById('endDate').value;
-            const totalRent = parseFloat(document.getElementById('totalRent').value) || 0;
-            const shippingFee = parseFloat(document.getElementById('shippingFee').value) || 0;
-
-            if (!startStr || !endStr) return;
-
-            const startDate = parseDate(startStr);
-            const endDate = parseDate(endStr);
-            const totalPeriod = Math.ceil((endDate - startDate) / MS_PER_DAY) + 1;
-            const dailyRent = (totalRent - shippingFee) / totalPeriod;
-            const remainingDays = getRemainingDays(endDate, date);
-            const refund = remainingDays * dailyRent * REFUND_RATE;
-
-            const formula = `
-                商家签收日：${formatDate(date)}<br>
-                退款金额 = 剩余天数 × 日均租金 × 70%<br>
-                = ${remainingDays} × ${dailyRent.toFixed(2)} × 0.7<br>
-                = ¥${refund.toFixed(2)}
-            `.trim();
-
-            document.getElementById('formulaDisplay').innerHTML = formula;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
